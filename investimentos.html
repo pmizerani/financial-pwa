@@ -1,0 +1,2650 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Plataforma completa para gerenciar investimentos e simular aplicações financeiras">
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Investimentos">
+    
+    <title>Meus Investimentos</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./manifest.json">
+    
+    <!-- Ícones -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='192' height='192' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%233b82f6;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%232563eb;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='192' height='192' rx='42' fill='url(%23grad)'/%3E%3Ctext x='96' y='135' font-size='100' text-anchor='middle' fill='white'%3E💰%3C/text%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg width='192' height='192' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%233b82f6;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%232563eb;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='192' height='192' rx='42' fill='url(%23grad)'/%3E%3Ctext x='96' y='135' font-size='100' text-anchor='middle' fill='white'%3E💰%3C/text%3E%3C/svg%3E">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 0;
+            border-bottom: 1px solid #1e293b;
+            gap: 30px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .nav-link {
+            padding: 12px 24px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            background: #334155;
+            color: #e2e8f0;
+        }
+
+        .nav-link.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .file-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background: #334155;
+            color: #e2e8f0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #475569;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-today {
+            background: #334155;
+            color: #e2e8f0;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .btn-today:hover {
+            background: #475569;
+        }
+
+        .date-input-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .date-input-group .form-input {
+            flex: 1;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        @media (max-width: 1400px) {
+            .dashboard {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .metric-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .metric-sub {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        .positive {
+            color: #10b981;
+        }
+
+        .negative {
+            color: #ef4444;
+        }
+
+        .chart-container {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .chart {
+            width: 100%;
+            height: 300px;
+            position: relative;
+        }
+
+        .chart-tooltip {
+            position: absolute;
+            background: #1e293b;
+            border: 1px solid #3b82f6;
+            border-radius: 8px;
+            padding: 12px 16px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .chart-tooltip.active {
+            opacity: 1;
+        }
+
+        .tooltip-date {
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .tooltip-label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .tooltip-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .table-container {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #0f172a;
+        }
+
+        th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #94a3b8;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #334155;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #1e293b;
+            color: #e2e8f0;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #0f172a;
+            cursor: pointer;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-blue {
+            background: #1e40af;
+            color: #93c5fd;
+        }
+
+        .badge-green {
+            background: #065f46;
+            color: #6ee7b7;
+        }
+
+        .badge-purple {
+            background: #581c87;
+            color: #d8b4fe;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            margin: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #64748b;
+            line-height: 1;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #334155;
+            color: #e2e8f0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #e2e8f0;
+            font-size: 14px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #e2e8f0;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .radio-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #e2e8f0;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 8px;
+            padding: 12px 16px;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .radio-label:hover {
+            border-color: #3b82f6;
+            background: #1e293b;
+        }
+
+        .radio-label input[type="radio"] {
+            display: none;
+        }
+
+        .radio-label input[type="radio"]:checked + span {
+            color: #3b82f6;
+        }
+
+        .radio-label:has(input[type="radio"]:checked) {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .modalidade-options {
+            margin-top: 15px;
+            padding: 15px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+        }
+
+        .tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .detail-table {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            padding: 12px 16px;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            flex: 0 0 200px;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+
+        .detail-value {
+            flex: 1;
+            color: #e2e8f0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: #334155;
+        }
+
+        .list-header {
+            background: #0f172a;
+            padding: 16px;
+            border-bottom: 1px solid #334155;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        .list-item {
+            padding: 16px;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .list-item:hover {
+            background: #0f172a;
+        }
+
+        .list-info {
+            flex: 1;
+        }
+
+        .list-main {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #fff;
+        }
+
+        .list-sub {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        canvas {
+            max-height: 300px;
+        }
+
+        /* Página Calculadora */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .calc-container {
+            margin-top: 30px;
+        }
+
+        .calc-inputs-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .calc-inputs-group {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .calc-section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .calc-results {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .calc-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .calc-result-card {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .calc-result-name {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+
+        .calc-result-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .calc-result-details {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        .calc-divider {
+            height: 1px;
+            background: #334155;
+            margin: 20px 0;
+        }
+
+        .calc-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 900px) {
+            .calc-inputs-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Meus Investimentos</h1>
+            <nav class="main-nav">
+                <a href="#" class="nav-link active" onclick="trocarPagina(event, 'investimentos')">💼 Investimentos</a>
+                <a href="#" class="nav-link" onclick="trocarPagina(event, 'calculadora')">📈 Calculadora</a>
+            </nav>
+            <div class="file-controls">
+                <span id="status-arquivo" style="color: #64748b; font-size: 13px; margin-right: 15px;">⏳ Conectando...</span>
+                <button class="btn" onclick="reconectarArquivo()" title="Reconectar ou trocar arquivo de dados">🔄 Reconectar</button>
+            </div>
+        </div>
+
+    <!-- Página Calculadora -->
+    <div id="page-calculadora" class="page">
+        <div class="calc-container">
+            <!-- Inputs no topo em grid -->
+            <div class="calc-inputs-row">
+                <div class="calc-inputs-group">
+                    <h2 class="calc-section-title">Dados da Simulação</h2>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Investimento Inicial</label>
+                        <input type="text" class="form-input calc-valor" id="calc-inicial" placeholder="10.000,00">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Aportes Mensais</label>
+                        <input type="text" class="form-input calc-valor" id="calc-aporte" placeholder="1.000,00">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Período (meses)</label>
+                        <input type="number" class="form-input" id="calc-periodo" value="12" min="1">
+                    </div>
+                </div>
+
+                <div class="calc-inputs-group">
+                    <h2 class="calc-section-title">Taxas de Mercado</h2>
+
+                    <div class="form-group">
+                        <label class="form-label">Taxa Selic (% a.a.)</label>
+                        <input type="text" class="form-input calc-percent" id="calc-selic" value="10,75">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">CDI (% a.a.)</label>
+                        <input type="text" class="form-input calc-percent" id="calc-cdi" value="10,65">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">IPCA (% a.a.)</label>
+                        <input type="text" class="form-input calc-percent" id="calc-ipca" value="4,50">
+                    </div>
+                </div>
+
+                <div class="calc-inputs-group">
+                    <h2 class="calc-section-title">Rentabilidades</h2>
+
+                    <div class="form-group">
+                        <label class="form-label">CDB (% do CDI)</label>
+                        <input type="text" class="form-input calc-percent" id="calc-cdb-percent" value="100,00">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">LCI/LCA (% do CDI)</label>
+                        <input type="text" class="form-input calc-percent" id="calc-lci-percent" value="85,00">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tesouro Selic (% da Selic)</label>
+                        <input type="text" class="form-input calc-percent" id="calc-tesouro-percent" value="100,00">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Poupança (% a.m.)</label>
+                        <input type="text" class="form-input calc-percent" id="calc-poupanca" value="0,50">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botão centralizado -->
+            <div class="calc-btn-container">
+                <button class="btn btn-primary" style="padding: 14px 48px; font-size: 16px;" onclick="calcularInvestimentos()">📈 Calcular Simulação</button>
+            </div>
+
+            <!-- Resultados abaixo -->
+            <div class="calc-results">
+                <h2 class="calc-section-title">Resultados da Simulação</h2>
+                <p style="color: #64748b; margin-bottom: 20px;">Preencha os dados e clique em "Calcular" para ver os resultados</p>
+                
+                <div id="calc-results-container" class="calc-results-grid"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Página Investimentos -->
+    <div id="page-investimentos" class="page active">
+        <div class="dashboard">
+            <div class="metric-card">
+                <div class="metric-label">Patrimônio Total</div>
+                <div class="metric-value" id="patrimonio-total">R$ 0,00</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Total Investido</div>
+                <div class="metric-value" id="total-investido">R$ 0,00</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Rendimento</div>
+                <div class="metric-value" id="rendimento-valor">R$ 0,00</div>
+                <div class="metric-sub" id="rendimento-percent">0%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Investimentos</div>
+                <div class="metric-value" id="total-investimentos">0</div>
+            </div>
+        </div>
+
+        <div class="dashboard" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="metric-card">
+                <div class="metric-label">Taxa Selic</div>
+                <div class="metric-value" id="taxa-selic">
+                    <span style="font-size: 16px; color: #64748b;">Carregando...</span>
+                </div>
+                <div class="metric-sub" id="selic-atualizacao"></div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">CDI Customizado</div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                    <input 
+                        type="text" 
+                        value="100,00" 
+                        id="input-percentual-cdi"
+                        onchange="calcularCDI()"
+                        placeholder="100,00"
+                        style="width: 120px; padding: 8px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #e2e8f0; font-size: 16px; font-weight: 600;"
+                    >
+                    <span style="color: #94a3b8; font-weight: 600;">% do CDI</span>
+                </div>
+                <div class="metric-value" id="taxa-cdi" style="margin-top: 12px;">-</div>
+                <div class="metric-sub">Taxa anual equivalente</div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-title">Evolução do Patrimônio (últimos 60 dias)</div>
+            <canvas id="chart" class="chart"></canvas>
+            <div id="chart-tooltip" class="chart-tooltip">
+                <div class="tooltip-date"></div>
+                <div class="tooltip-label">Patrimônio Total</div>
+                <div class="tooltip-value"></div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">Investimentos</h2>
+                <button class="btn btn-primary" onclick="abrirModalNovoInvestimento()">+ Novo Investimento</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Valor Aplicado</th>
+                            <th>Último Saldo</th>
+                            <th>Rendimento</th>
+                            <th>Liquidez</th>
+                            <th>Taxa</th>
+                            <th>Data Aplicação</th>
+                            <th style="width: 150px;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="investments-list"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Investimento -->
+    <div id="modal-investimento" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-investimento-title">Novo Investimento</h2>
+                <button class="close-btn" onclick="fecharModal('modal-investimento')">&times;</button>
+            </div>
+            <form onsubmit="salvarInvestimento(event)">
+                <input type="hidden" name="id" id="investimento-id">
+                <div class="form-group">
+                    <label class="form-label">Nome do Investimento</label>
+                    <input type="text" class="form-input" name="nome" id="investimento-nome" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Valor Aplicado</label>
+                        <input type="text" class="form-input" name="valorAplicado" id="investimento-valor" required placeholder="1.000,00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data da Aplicação</label>
+                        <input type="date" class="form-input" name="dataAplicacao" id="investimento-data" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tipo de Investimento</label>
+                    <select class="form-select" name="tipo" id="investimento-tipo" required>
+                        <option value="">Selecione...</option>
+                        <option value="CDB">CDB</option>
+                        <option value="LCI">LCI</option>
+                        <option value="LCA">LCA</option>
+                        <option value="Tesouro Direto">Tesouro Direto</option>
+                        <option value="Fundos">Fundos</option>
+                        <option value="Ações">Ações</option>
+                        <option value="FIIs">FIIs</option>
+                        <option value="Debêntures">Debêntures</option>
+                        <option value="Poupança">Poupança</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Modalidade</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="modalidade" value="pre" required onchange="toggleModalidadeFields()">
+                            <span>💰 Pré-fixado</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="modalidade" value="pos" onchange="toggleModalidadeFields()">
+                            <span>📈 Pós-fixado</span>
+                        </label>
+                    </div>
+                    <div class="modalidade-options">
+                        <div id="taxa-pre" style="display: none;">
+                            <label class="form-label">Taxa de Juros Anual (%)</label>
+                            <input type="text" class="form-input" name="taxaPre" id="investimento-taxa-pre" placeholder="12,50">
+                        </div>
+                        <div id="taxa-pos" style="display: none;">
+                            <label class="form-label">Percentual do CDI (%)</label>
+                            <input type="text" class="form-input" name="taxaPos" id="investimento-taxa-pos" placeholder="110,00">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Liquidez</label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="liquidez" value="diaria" required onchange="toggleVencimento()">
+                            <span>💧 Liquidez Diária</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="liquidez" value="vencimento" onchange="toggleVencimento()">
+                            <span>📅 Com Vencimento</span>
+                        </label>
+                    </div>
+                    <div id="data-vencimento" style="display: none; margin-top: 10px;">
+                        <label class="form-label">Data de Vencimento</label>
+                        <input type="date" class="form-input" name="dataVencimento" id="investimento-vencimento">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Observações</label>
+                    <textarea class="form-textarea" name="observacoes" id="investimento-obs"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Salvar</button>
+                    <button type="button" class="btn" onclick="fecharModal('modal-investimento')" style="flex: 0 0 120px;">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detalhes -->
+    <div id="modal-detalhes" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="detalhes-nome">Detalhes</h2>
+                <button class="close-btn" onclick="fecharModal('modal-detalhes')">&times;</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="trocarTab('info')">Informações</button>
+                <button class="tab" onclick="trocarTab('saldos')">Saldos</button>
+                <button class="tab" onclick="trocarTab('aportes')">Aportes</button>
+                <button class="tab" onclick="trocarTab('retiradas')">Retiradas</button>
+            </div>
+
+            <div id="tab-info" class="tab-content active">
+                <div id="detalhes-info" class="detail-table"></div>
+            </div>
+
+            <div id="tab-saldos" class="tab-content">
+                <form onsubmit="salvarSaldo(event)" style="margin-bottom: 20px; padding: 20px; background: #0f172a; border: 1px solid #334155; border-radius: 8px;">
+                    <input type="hidden" name="saldo-id" id="saldo-id">
+                    <h3 style="margin-bottom: 15px; color: #fff;" id="form-saldo-title">Adicionar Saldo</h3>
+                    <div class="form-row">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Valor</label>
+                            <input type="text" class="form-input" name="valorSaldo" id="saldo-valor" required placeholder="1.000,00">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Data</label>
+                            <div class="date-input-group">
+                                <input type="date" class="form-input" name="dataSaldo" id="saldo-data" required>
+                                <button type="button" class="btn-today" onclick="setDataHoje('saldo-data')">📅 Hoje</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button type="submit" class="btn btn-primary" style="flex: 1;" id="btn-salvar-saldo">Adicionar</button>
+                        <button type="button" class="btn" onclick="cancelarEdicaoSaldo()" id="btn-cancelar-saldo" style="display: none; flex: 0 0 120px;">Cancelar</button>
+                    </div>
+                </form>
+                <div class="table-container">
+                    <div class="list-header">Histórico de Saldos</div>
+                    <div id="lista-saldos"></div>
+                </div>
+            </div>
+
+            <div id="tab-aportes" class="tab-content">
+                <form onsubmit="salvarAporte(event)" style="margin-bottom: 20px; padding: 20px; background: #0f172a; border: 1px solid #334155; border-radius: 8px;">
+                    <input type="hidden" name="aporte-id" id="aporte-id">
+                    <h3 style="margin-bottom: 15px; color: #fff;" id="form-aporte-title">Adicionar Aporte</h3>
+                    <div class="form-row">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Valor</label>
+                            <input type="text" class="form-input" name="valorAporte" id="aporte-valor" required placeholder="1.000,00">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Data</label>
+                            <div class="date-input-group">
+                                <input type="date" class="form-input" name="dataAporte" id="aporte-data" required>
+                                <button type="button" class="btn-today" onclick="setDataHoje('aporte-data')">📅 Hoje</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Observações</label>
+                        <textarea class="form-textarea" name="obsAporte" id="aporte-obs"></textarea>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="submit" class="btn btn-success" style="flex: 1;" id="btn-salvar-aporte">Adicionar</button>
+                        <button type="button" class="btn" onclick="cancelarEdicaoAporte()" id="btn-cancelar-aporte" style="display: none; flex: 0 0 120px;">Cancelar</button>
+                    </div>
+                </form>
+                <div class="table-container">
+                    <div class="list-header">Histórico de Aportes</div>
+                    <div id="lista-aportes"></div>
+                </div>
+            </div>
+
+            <div id="tab-retiradas" class="tab-content">
+                <form onsubmit="salvarRetirada(event)" style="margin-bottom: 20px; padding: 20px; background: #0f172a; border: 1px solid #334155; border-radius: 8px;">
+                    <input type="hidden" name="retirada-id" id="retirada-id">
+                    <h3 style="margin-bottom: 15px; color: #fff;" id="form-retirada-title">Adicionar Retirada</h3>
+                    <div class="form-row">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Valor</label>
+                            <input type="text" class="form-input" name="valorRetirada" id="retirada-valor" required placeholder="1.000,00">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label">Data</label>
+                            <div class="date-input-group">
+                                <input type="date" class="form-input" name="dataRetirada" id="retirada-data" required>
+                                <button type="button" class="btn-today" onclick="setDataHoje('retirada-data')">📅 Hoje</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Observações</label>
+                        <textarea class="form-textarea" name="obsRetirada" id="retirada-obs"></textarea>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="submit" class="btn btn-danger" style="flex: 1;" id="btn-salvar-retirada">Adicionar</button>
+                        <button type="button" class="btn" onclick="cancelarEdicaoRetirada()" id="btn-cancelar-retirada" style="display: none; flex: 0 0 120px;">Cancelar</button>
+                    </div>
+                </form>
+                <div class="table-container">
+                    <div class="list-header">Histórico de Retiradas</div>
+                    <div id="lista-retiradas"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let investimentos = [];
+        let investimentoAtual = null;
+        let fileHandle = null;
+        let chart = null;
+        let taxaSelicAtual = 0;
+        const ARQUIVO_DADOS = 'database_financial.json';
+
+        inicializar();
+
+        async function inicializar() {
+            atualizarStatusArquivo('⏳ Conectando...', '#64748b');
+            await tentarConectarArquivo();
+            renderizarInvestimentos();
+            atualizarDashboard();
+            renderizarGrafico();
+            buscarTaxaSelic();
+            aplicarMascaras();
+            
+            if (fileHandle) {
+                atualizarStatusArquivo('✅ Conectado', '#10b981');
+            } else {
+                atualizarStatusArquivo('❌ Não conectado', '#ef4444');
+            }
+        }
+
+        function atualizarStatusArquivo(texto, cor) {
+            const status = document.getElementById('status-arquivo');
+            if (status) {
+                status.textContent = texto;
+                status.style.color = cor;
+            }
+        }
+
+        // Tentar conectar ao arquivo existente ou pedir para criar
+        async function tentarConectarArquivo() {
+            try {
+                // Verificar se temos permissão salva do IndexedDB
+                const db = await abrirBancoDados();
+                const handleSalvo = await recuperarFileHandle(db);
+                
+                if (handleSalvo) {
+                    // Tentar usar o handle salvo
+                    try {
+                        // Verificar e solicitar permissão se necessário
+                        let permissao = await handleSalvo.queryPermission({ mode: 'readwrite' });
+                        
+                        if (permissao !== 'granted') {
+                            permissao = await handleSalvo.requestPermission({ mode: 'readwrite' });
+                        }
+                        
+                        if (permissao === 'granted') {
+                            fileHandle = handleSalvo;
+                            const file = await fileHandle.getFile();
+                            const conteudo = await file.text();
+                            
+                            if (conteudo && conteudo.trim()) {
+                                investimentos = JSON.parse(conteudo);
+                                console.log('✅ Arquivo carregado automaticamente:', file.name);
+                                atualizarStatusArquivo('✅ ' + file.name, '#10b981');
+                                return;
+                            }
+                        }
+                    } catch (err) {
+                        // Permissão expirada ou arquivo não existe mais
+                        console.log('⚠️ Erro ao acessar arquivo anterior:', err.message);
+                        fileHandle = null;
+                    }
+                }
+
+                // Se não conseguiu carregar, pedir para selecionar/criar arquivo
+                await solicitarArquivo();
+                
+            } catch (error) {
+                console.error('❌ Erro ao conectar arquivo:', error);
+                await solicitarArquivo();
+            }
+        }
+
+        // Solicitar arquivo (abrir existente ou criar novo)
+        async function solicitarArquivo() {
+            if (!window.showOpenFilePicker) {
+                alert('❌ Seu navegador não suporta salvamento em arquivo.\nOs dados serão perdidos ao fechar a página.');
+                return;
+            }
+
+            try {
+                // Perguntar ao usuário
+                const escolha = confirm(
+                    '📂 Conectar ao arquivo de dados\n\n' +
+                    'Clique em OK para:\n' +
+                    '• Abrir um arquivo existente (' + ARQUIVO_DADOS + ')\n' +
+                    '• Ou criar um novo arquivo\n\n' +
+                    'Sugestão: Salve na mesma pasta deste arquivo HTML'
+                );
+
+                if (!escolha) {
+                    alert('⚠️ Sem arquivo conectado, os dados não serão salvos!');
+                    return;
+                }
+
+                // Tentar abrir arquivo existente primeiro
+                try {
+                    const [handle] = await window.showOpenFilePicker({
+                        types: [{
+                            description: 'Banco de Dados Financeiro',
+                            accept: {'application/json': ['.json']}
+                        }],
+                        multiple: false
+                    });
+
+                    fileHandle = handle;
+                    
+                    // Verificar permissão de escrita
+                    const permissao = await fileHandle.queryPermission({ mode: 'readwrite' });
+                    if (permissao !== 'granted') {
+                        await fileHandle.requestPermission({ mode: 'readwrite' });
+                    }
+
+                    // Carregar dados do arquivo
+                    const file = await handle.getFile();
+                    const conteudo = await file.text();
+                    
+                    if (conteudo.trim()) {
+                        investimentos = JSON.parse(conteudo);
+                        console.log('✅ Arquivo conectado:', file.name);
+                        atualizarStatusArquivo('✅ ' + file.name, '#10b981');
+                    }
+
+                    // Salvar o handle para próximas vezes
+                    await salvarFileHandle(fileHandle);
+                    
+                    // Atualizar a tela com os dados carregados
+                    renderizarInvestimentos();
+                    atualizarDashboard();
+                    renderizarGrafico();
+                    
+                } catch (err) {
+                    if (err.name === 'AbortError') {
+                        // Usuário cancelou, tentar criar novo
+                        await criarNovoArquivo();
+                    } else {
+                        throw err;
+                    }
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro ao selecionar arquivo:', error);
+                alert('❌ Não foi possível conectar ao arquivo.\nOs dados não serão salvos!');
+            }
+        }
+
+        // Criar novo arquivo
+        async function criarNovoArquivo() {
+            try {
+                const handle = await window.showSaveFilePicker({
+                    suggestedName: ARQUIVO_DADOS,
+                    types: [{
+                        description: 'Banco de Dados Financeiro',
+                        accept: {'application/json': ['.json']}
+                    }]
+                });
+
+                fileHandle = handle;
+                
+                // Criar arquivo vazio inicial
+                const writable = await fileHandle.createWritable();
+                await writable.write(JSON.stringify([], null, 2));
+                await writable.close();
+                
+                console.log('✅ Novo arquivo criado');
+                atualizarStatusArquivo('✅ Novo arquivo criado', '#10b981');
+                
+                // Salvar o handle para próximas vezes
+                await salvarFileHandle(fileHandle);
+                
+                // Atualizar a tela
+                renderizarInvestimentos();
+                atualizarDashboard();
+                renderizarGrafico();
+                
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    throw err;
+                }
+            }
+        }
+
+        // Salvar automaticamente no arquivo
+        async function salvarAutomatico() {
+            if (!fileHandle) {
+                console.error('⚠️ Nenhum arquivo conectado. Dados não serão salvos!');
+                return;
+            }
+
+            try {
+                // Verificar permissão
+                const permissao = await fileHandle.queryPermission({ mode: 'readwrite' });
+                if (permissao !== 'granted') {
+                    const novoPerm = await fileHandle.requestPermission({ mode: 'readwrite' });
+                    if (novoPerm !== 'granted') {
+                        throw new Error('Permissão de escrita negada');
+                    }
+                }
+
+                // Salvar no arquivo
+                const writable = await fileHandle.createWritable();
+                await writable.write(JSON.stringify(investimentos, null, 2));
+                await writable.close();
+                
+                console.log('✅ Dados salvos no arquivo');
+                
+            } catch (error) {
+                console.error('❌ Erro ao salvar no arquivo:', error);
+                
+                // Se perder permissão, pedir novamente
+                if (error.name === 'NotAllowedError') {
+                    alert('⚠️ Permissão de acesso ao arquivo perdida.\nPor favor, reconecte o arquivo.');
+                    fileHandle = null;
+                    await solicitarArquivo();
+                }
+            }
+        }
+
+        // ===== IndexedDB para persistir o fileHandle =====
+        
+        async function abrirBancoDados() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('InvestimentosDB', 1);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains('fileHandles')) {
+                        db.createObjectStore('fileHandles');
+                    }
+                };
+            });
+        }
+
+        async function salvarFileHandle(handle) {
+            try {
+                const db = await abrirBancoDados();
+                const transaction = db.transaction(['fileHandles'], 'readwrite');
+                const store = transaction.objectStore('fileHandles');
+                
+                return new Promise((resolve, reject) => {
+                    const request = store.put(handle, 'mainFile');
+                    request.onsuccess = () => {
+                        console.log('✅ Permissão de arquivo salva');
+                        resolve();
+                    };
+                    request.onerror = () => reject(request.error);
+                });
+            } catch (error) {
+                console.error('Erro ao salvar handle:', error);
+            }
+        }
+
+        async function recuperarFileHandle(db) {
+            try {
+                const transaction = db.transaction(['fileHandles'], 'readonly');
+                const store = transaction.objectStore('fileHandles');
+                
+                return new Promise((resolve) => {
+                    const request = store.get('mainFile');
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => resolve(null);
+                });
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function aplicarMascaras() {
+            // Máscara para valores monetários
+            const inputsValor = document.querySelectorAll('input[name="valorAplicado"], input[name="valorSaldo"], input[name="valorAporte"], input[name="valorRetirada"], .calc-valor');
+            inputsValor.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    value = (parseInt(value) / 100).toFixed(2);
+                    e.target.value = value.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                });
+                
+                input.addEventListener('focus', function(e) {
+                    if (e.target.value === '0,00') e.target.value = '';
+                });
+            });
+
+            // Máscara para porcentagem
+            const inputsPercentual = document.querySelectorAll('input[name="taxaPre"], input[name="taxaPos"], #input-percentual-cdi, .calc-percent');
+            inputsPercentual.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    value = (parseInt(value) / 100).toFixed(2);
+                    e.target.value = value.replace('.', ',');
+                });
+                
+                input.addEventListener('focus', function(e) {
+                    if (e.target.value === '0,00') e.target.value = '';
+                });
+            });
+        }
+
+        function parseValorMonetario(valor) {
+            if (!valor) return 0;
+            return parseFloat(valor.replace(/\./g, '').replace(',', '.'));
+        }
+
+        function formatarValorMonetario(valor) {
+            return valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        function formatarValorReal(valor) {
+            return 'R$ ' + valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        async function buscarTaxaSelic() {
+            try {
+                // API do Banco Central do Brasil - Selic (meta)
+                const response = await fetch('https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/1?formato=json');
+                const data = await response.json();
+                
+                if (data && data.length > 0) {
+                    taxaSelicAtual = parseFloat(data[0].valor);
+                    const dataAtualizacao = data[0].data;
+                    
+                    // Taxa Selic anual
+                    document.getElementById('taxa-selic').innerHTML = `${taxaSelicAtual.toFixed(2)}% <span style="font-size: 16px; color: #64748b;">a.a.</span>`;
+                    document.getElementById('selic-atualizacao').textContent = `Atualizado em ${dataAtualizacao}`;
+                    
+                    // Calcular CDI inicial
+                    calcularCDI();
+                }
+            } catch (error) {
+                document.getElementById('taxa-selic').innerHTML = '<span style="font-size: 16px; color: #ef4444;">Erro ao carregar</span>';
+                document.getElementById('taxa-cdi').textContent = '-';
+                console.error('Erro ao buscar taxa Selic:', error);
+            }
+        }
+
+        function calcularCDI() {
+            const percentualInput = document.getElementById('input-percentual-cdi').value;
+            const percentualCDI = parseValorMonetario(percentualInput) || 100;
+            
+            if (taxaSelicAtual > 0) {
+                // CDI base fica ~0.10% abaixo da Selic
+                const cdiBase = taxaSelicAtual - 0.10;
+                const cdiCustomizado = (cdiBase * percentualCDI) / 100;
+                
+                document.getElementById('taxa-cdi').innerHTML = `${cdiCustomizado.toFixed(2)}% <span style="font-size: 16px; color: #64748b;">a.a.</span>`;
+            }
+        }
+
+        function abrirModalNovoInvestimento() {
+            document.getElementById('modal-investimento-title').textContent = 'Novo Investimento';
+            document.querySelector('#modal-investimento form').reset();
+            document.getElementById('investimento-id').value = '';
+            document.getElementById('modal-investimento').classList.add('active');
+        }
+
+        function editarInvestimento(id) {
+            const inv = investimentos.find(i => i.id === id);
+            if (!inv) return;
+
+            document.getElementById('modal-investimento-title').textContent = 'Editar Investimento';
+            document.getElementById('investimento-id').value = inv.id;
+            document.getElementById('investimento-nome').value = inv.nome;
+            document.getElementById('investimento-valor').value = formatarValorMonetario(inv.valorAplicado);
+            document.getElementById('investimento-data').value = inv.dataAplicacao;
+            document.getElementById('investimento-tipo').value = inv.tipo;
+            
+            const radioModalidade = document.querySelector(`input[name="modalidade"][value="${inv.modalidade}"]`);
+            if (radioModalidade) radioModalidade.checked = true;
+            toggleModalidadeFields();
+            
+            if (inv.modalidade === 'pre') {
+                document.getElementById('investimento-taxa-pre').value = formatarValorMonetario(inv.taxa);
+            } else {
+                document.getElementById('investimento-taxa-pos').value = formatarValorMonetario(inv.taxa);
+            }
+
+            const radioLiquidez = document.querySelector(`input[name="liquidez"][value="${inv.liquidez}"]`);
+            if (radioLiquidez) radioLiquidez.checked = true;
+            toggleVencimento();
+            
+            if (inv.dataVencimento) {
+                document.getElementById('investimento-vencimento').value = inv.dataVencimento;
+            }
+            
+            document.getElementById('investimento-obs').value = inv.observacoes || '';
+
+            document.getElementById('modal-investimento').classList.add('active');
+        }
+
+        function fecharModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        function toggleModalidadeFields() {
+            const checked = document.querySelector('input[name="modalidade"]:checked');
+            if (!checked) return;
+            const modalidade = checked.value;
+            document.getElementById('taxa-pre').style.display = modalidade === 'pre' ? 'block' : 'none';
+            document.getElementById('taxa-pos').style.display = modalidade === 'pos' ? 'block' : 'none';
+        }
+
+        function toggleVencimento() {
+            const checked = document.querySelector('input[name="liquidez"]:checked');
+            if (!checked) return;
+            const liquidez = checked.value;
+            document.getElementById('data-vencimento').style.display = liquidez === 'vencimento' ? 'block' : 'none';
+        }
+
+        function salvarInvestimento(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            const id = formData.get('id');
+            const modalidade = formData.get('modalidade');
+            const taxaValue = modalidade === 'pre' ? formData.get('taxaPre') : formData.get('taxaPos');
+            
+            const investimento = {
+                id: id ? parseInt(id) : Date.now(),
+                nome: formData.get('nome'),
+                valorAplicado: parseValorMonetario(formData.get('valorAplicado')),
+                tipo: formData.get('tipo'),
+                dataAplicacao: formData.get('dataAplicacao'),
+                modalidade: modalidade,
+                taxa: parseValorMonetario(taxaValue),
+                liquidez: formData.get('liquidez'),
+                dataVencimento: formData.get('dataVencimento') || null,
+                observacoes: formData.get('observacoes'),
+                saldos: [],
+                aportes: [],
+                retiradas: []
+            };
+
+            if (id) {
+                const idx = investimentos.findIndex(i => i.id === parseInt(id));
+                investimento.saldos = investimentos[idx].saldos;
+                investimento.aportes = investimentos[idx].aportes;
+                investimento.retiradas = investimentos[idx].retiradas;
+                investimentos[idx] = investimento;
+            } else {
+                investimentos.push(investimento);
+            }
+
+            renderizarInvestimentos();
+            atualizarDashboard();
+            renderizarGrafico();
+            fecharModal('modal-investimento');
+            form.reset();
+            salvarAutomatico();
+        }
+
+        function excluirInvestimento(id) {
+            const inv = investimentos.find(i => i.id === id);
+            if (!confirm(`Excluir "${inv.nome}"?`)) return;
+            
+            investimentos = investimentos.filter(i => i.id !== id);
+            renderizarInvestimentos();
+            atualizarDashboard();
+            renderizarGrafico();
+            salvarAutomatico();
+        }
+
+        function getUltimoSaldo(investimento) {
+            if (investimento.saldos.length === 0) return null;
+            // Ordena por data (mais recente primeiro) e pega o primeiro
+            const saldosOrdenados = [...investimento.saldos].sort((a, b) => new Date(b.data) - new Date(a.data));
+            return saldosOrdenados[0];
+        }
+
+        function renderizarInvestimentos() {
+            const tbody = document.getElementById('investments-list');
+            
+            if (investimentos.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px; color: #64748b;">Nenhum investimento cadastrado</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = investimentos.map(inv => {
+                const ultimoSaldo = getUltimoSaldo(inv);
+                const taxaLabel = inv.modalidade === 'pre' ? `${inv.taxa}% a.a.` : `${inv.taxa}% CDI`;
+                
+                let rendimentoValor = 0;
+                let rendimentoPercent = 0;
+                let rendimentoHtml = '-';
+                
+                if (ultimoSaldo) {
+                    rendimentoValor = ultimoSaldo.valor - inv.valorAplicado;
+                    rendimentoPercent = (rendimentoValor / inv.valorAplicado) * 100;
+                    const cor = rendimentoValor >= 0 ? '#10b981' : '#ef4444';
+                    const sinal = rendimentoValor >= 0 ? '+' : '';
+                    rendimentoHtml = `
+                        <div style="color: ${cor};">
+                            <strong>${sinal}${formatarValorReal(rendimentoValor)}</strong><br>
+                            <span style="font-size: 12px;">${sinal}${rendimentoPercent.toFixed(2)}%</span>
+                        </div>
+                    `;
+                }
+
+                const liquidezLabel = inv.liquidez === 'diaria' ? 'Diária' : formatarData(inv.dataVencimento);
+                
+                return `
+                    <tr onclick="handleRowClick(event, ${inv.id})">
+                        <td><strong>${inv.nome}</strong></td>
+                        <td><span class="badge badge-blue">${inv.tipo}</span></td>
+                        <td>${formatarValorReal(inv.valorAplicado)}</td>
+                        <td>${ultimoSaldo ? `<strong style="color: #10b981;">${formatarValorReal(ultimoSaldo.valor)}</strong>` : '-'}</td>
+                        <td>${rendimentoHtml}</td>
+                        <td>${liquidezLabel}</td>
+                        <td>${taxaLabel}</td>
+                        <td>${formatarData(inv.dataAplicacao)}</td>
+                        <td class="actions-cell">
+                            <button class="icon-btn" onclick="event.stopPropagation(); abrirAdicionarSaldoRapido(${inv.id})" title="Adicionar saldo">💰</button>
+                            <button class="icon-btn" onclick="event.stopPropagation(); editarInvestimento(${inv.id})" title="Editar">✏️</button>
+                            <button class="icon-btn" onclick="event.stopPropagation(); excluirInvestimento(${inv.id})" title="Excluir">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('total-investimentos').textContent = investimentos.length;
+        }
+
+        function handleRowClick(event, id) {
+            // Ignora o clique se foi em um botão
+            if (event.target.closest('.icon-btn')) {
+                return;
+            }
+            abrirDetalhes(id);
+        }
+
+        function setDataHoje(inputId) {
+            const hoje = new Date().toISOString().split('T')[0];
+            document.getElementById(inputId).value = hoje;
+        }
+
+        function abrirAdicionarSaldoRapido(id) {
+            // Abre o modal de detalhes direto na aba de saldos
+            investimentoAtual = investimentos.find(i => i.id === id);
+            if (!investimentoAtual) return;
+
+            document.getElementById('detalhes-nome').textContent = investimentoAtual.nome;
+            
+            const taxaLabel = investimentoAtual.modalidade === 'pre' 
+                ? `${investimentoAtual.taxa}% a.a.` 
+                : `${investimentoAtual.taxa}% do CDI`;
+
+            document.getElementById('detalhes-info').innerHTML = `
+                <div class="detail-row">
+                    <div class="detail-label">Tipo</div>
+                    <div class="detail-value">${investimentoAtual.tipo}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Valor Aplicado</div>
+                    <div class="detail-value">${formatarValorReal(investimentoAtual.valorAplicado)}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Data da Aplicação</div>
+                    <div class="detail-value">${formatarData(investimentoAtual.dataAplicacao)}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Modalidade</div>
+                    <div class="detail-value">${investimentoAtual.modalidade === 'pre' ? 'Pré-fixado' : 'Pós-fixado'}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Rentabilidade</div>
+                    <div class="detail-value">${taxaLabel}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Liquidez</div>
+                    <div class="detail-value">${investimentoAtual.liquidez === 'diaria' ? 'Diária' : 'Com Vencimento'}</div>
+                </div>
+                ${investimentoAtual.dataVencimento ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Vencimento</div>
+                        <div class="detail-value">${formatarData(investimentoAtual.dataVencimento)}</div>
+                    </div>
+                ` : ''}
+                ${investimentoAtual.observacoes ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Observações</div>
+                        <div class="detail-value">${investimentoAtual.observacoes}</div>
+                    </div>
+                ` : ''}
+            `;
+
+            renderizarSaldos();
+            renderizarAportes();
+            renderizarRetiradas();
+
+            // Ativar tab de saldos
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab')[1].classList.add('active'); // Segunda tab (saldos)
+            document.getElementById('tab-saldos').classList.add('active');
+
+            // Preencher data de hoje automaticamente
+            setDataHoje('saldo-data');
+
+            document.getElementById('modal-detalhes').classList.add('active');
+            
+            // Focar no campo de valor
+            setTimeout(() => document.getElementById('saldo-valor').focus(), 100);
+        }
+
+        function abrirDetalhes(id) {
+            investimentoAtual = investimentos.find(i => i.id === id);
+            if (!investimentoAtual) return;
+
+            document.getElementById('detalhes-nome').textContent = investimentoAtual.nome;
+            
+            const taxaLabel = investimentoAtual.modalidade === 'pre' 
+                ? `${investimentoAtual.taxa}% a.a.` 
+                : `${investimentoAtual.taxa}% do CDI`;
+
+            document.getElementById('detalhes-info').innerHTML = `
+                <div class="detail-row">
+                    <div class="detail-label">Tipo</div>
+                    <div class="detail-value">${investimentoAtual.tipo}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Valor Aplicado</div>
+                    <div class="detail-value">${formatarValorReal(investimentoAtual.valorAplicado)}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Data da Aplicação</div>
+                    <div class="detail-value">${formatarData(investimentoAtual.dataAplicacao)}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Modalidade</div>
+                    <div class="detail-value">${investimentoAtual.modalidade === 'pre' ? 'Pré-fixado' : 'Pós-fixado'}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Rentabilidade</div>
+                    <div class="detail-value">${taxaLabel}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Liquidez</div>
+                    <div class="detail-value">${investimentoAtual.liquidez === 'diaria' ? 'Diária' : 'Com Vencimento'}</div>
+                </div>
+                ${investimentoAtual.dataVencimento ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Vencimento</div>
+                        <div class="detail-value">${formatarData(investimentoAtual.dataVencimento)}</div>
+                    </div>
+                ` : ''}
+                ${investimentoAtual.observacoes ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Observações</div>
+                        <div class="detail-value">${investimentoAtual.observacoes}</div>
+                    </div>
+                ` : ''}
+            `;
+
+            renderizarSaldos();
+            renderizarAportes();
+            renderizarRetiradas();
+
+            document.getElementById('modal-detalhes').classList.add('active');
+        }
+
+        function trocarTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tab}`).classList.add('active');
+        }
+
+        // Saldos
+        function salvarSaldo(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const id = formData.get('saldo-id');
+
+            const saldo = {
+                id: id ? parseInt(id) : Date.now(),
+                valor: parseValorMonetario(formData.get('valorSaldo')),
+                data: formData.get('dataSaldo')
+            };
+
+            if (id) {
+                const idx = investimentoAtual.saldos.findIndex(s => s.id === parseInt(id));
+                investimentoAtual.saldos[idx] = saldo;
+            } else {
+                investimentoAtual.saldos.push(saldo);
+            }
+
+            investimentoAtual.saldos.sort((a, b) => new Date(b.data) - new Date(a.data));
+            
+            renderizarSaldos();
+            renderizarInvestimentos();
+            atualizarDashboard();
+            renderizarGrafico();
+            cancelarEdicaoSaldo();
+            salvarAutomatico();
+        }
+
+        function editarSaldo(id) {
+            const saldo = investimentoAtual.saldos.find(s => s.id === id);
+            if (!saldo) return;
+
+            document.getElementById('form-saldo-title').textContent = 'Editar Saldo';
+            document.getElementById('saldo-id').value = saldo.id;
+            document.getElementById('saldo-valor').value = formatarValorMonetario(saldo.valor);
+            document.getElementById('saldo-data').value = saldo.data;
+            document.getElementById('btn-salvar-saldo').textContent = 'Salvar';
+            document.getElementById('btn-cancelar-saldo').style.display = 'block';
+        }
+
+        function cancelarEdicaoSaldo() {
+            document.getElementById('form-saldo-title').textContent = 'Adicionar Saldo';
+            document.querySelector('#tab-saldos form').reset();
+            document.getElementById('btn-salvar-saldo').textContent = 'Adicionar';
+            document.getElementById('btn-cancelar-saldo').style.display = 'none';
+        }
+
+        function excluirSaldo(id) {
+            if (!confirm('Excluir este saldo?')) return;
+            investimentoAtual.saldos = investimentoAtual.saldos.filter(s => s.id !== id);
+            renderizarSaldos();
+            renderizarInvestimentos();
+            atualizarDashboard();
+            renderizarGrafico();
+            salvarAutomatico();
+        }
+
+        function renderizarSaldos() {
+            const container = document.getElementById('lista-saldos');
+            
+            if (investimentoAtual.saldos.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div style="font-size: 14px;">Nenhum saldo registrado</div></div>';
+                return;
+            }
+
+            container.innerHTML = investimentoAtual.saldos.map(saldo => `
+                <div class="list-item">
+                    <div class="list-info">
+                        <div class="list-main">${formatarValorReal(saldo.valor)}</div>
+                        <div class="list-sub">${formatarData(saldo.data)}</div>
+                    </div>
+                    <div class="actions-cell">
+                        <button class="icon-btn" onclick="editarSaldo(${saldo.id})" title="Editar">✏️</button>
+                        <button class="icon-btn" onclick="excluirSaldo(${saldo.id})" title="Excluir">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Aportes
+        function salvarAporte(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const id = formData.get('aporte-id');
+
+            const aporte = {
+                id: id ? parseInt(id) : Date.now(),
+                valor: parseValorMonetario(formData.get('valorAporte')),
+                data: formData.get('dataAporte'),
+                observacoes: formData.get('obsAporte')
+            };
+
+            if (id) {
+                const idx = investimentoAtual.aportes.findIndex(a => a.id === parseInt(id));
+                investimentoAtual.aportes[idx] = aporte;
+            } else {
+                investimentoAtual.aportes.push(aporte);
+            }
+
+            investimentoAtual.aportes.sort((a, b) => new Date(b.data) - new Date(a.data));
+            
+            renderizarAportes();
+            atualizarDashboard();
+            cancelarEdicaoAporte();
+            salvarAutomatico();
+        }
+
+        function editarAporte(id) {
+            const aporte = investimentoAtual.aportes.find(a => a.id === id);
+            if (!aporte) return;
+
+            document.getElementById('form-aporte-title').textContent = 'Editar Aporte';
+            document.getElementById('aporte-id').value = aporte.id;
+            document.getElementById('aporte-valor').value = formatarValorMonetario(aporte.valor);
+            document.getElementById('aporte-data').value = aporte.data;
+            document.getElementById('aporte-obs').value = aporte.observacoes || '';
+            document.getElementById('btn-salvar-aporte').textContent = 'Salvar';
+            document.getElementById('btn-cancelar-aporte').style.display = 'block';
+        }
+
+        function cancelarEdicaoAporte() {
+            document.getElementById('form-aporte-title').textContent = 'Adicionar Aporte';
+            document.querySelector('#tab-aportes form').reset();
+            document.getElementById('btn-salvar-aporte').textContent = 'Adicionar';
+            document.getElementById('btn-cancelar-aporte').style.display = 'none';
+        }
+
+        function excluirAporte(id) {
+            if (!confirm('Excluir este aporte?')) return;
+            investimentoAtual.aportes = investimentoAtual.aportes.filter(a => a.id !== id);
+            renderizarAportes();
+            atualizarDashboard();
+            salvarAutomatico();
+        }
+
+        function renderizarAportes() {
+            const container = document.getElementById('lista-aportes');
+            
+            if (investimentoAtual.aportes.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div style="font-size: 14px;">Nenhum aporte registrado</div></div>';
+                return;
+            }
+
+            container.innerHTML = investimentoAtual.aportes.map(aporte => `
+                <div class="list-item">
+                    <div class="list-info">
+                        <div class="list-main" style="color: #10b981;">+ ${formatarValorReal(aporte.valor)}</div>
+                        <div class="list-sub">${formatarData(aporte.data)}</div>
+                        ${aporte.observacoes ? `<div class="list-sub" style="font-style: italic; margin-top: 4px;">${aporte.observacoes}</div>` : ''}
+                    </div>
+                    <div class="actions-cell">
+                        <button class="icon-btn" onclick="editarAporte(${aporte.id})" title="Editar">✏️</button>
+                        <button class="icon-btn" onclick="excluirAporte(${aporte.id})" title="Excluir">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Retiradas
+        function salvarRetirada(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const id = formData.get('retirada-id');
+
+            const retirada = {
+                id: id ? parseInt(id) : Date.now(),
+                valor: parseValorMonetario(formData.get('valorRetirada')),
+                data: formData.get('dataRetirada'),
+                observacoes: formData.get('obsRetirada')
+            };
+
+            if (id) {
+                const idx = investimentoAtual.retiradas.findIndex(r => r.id === parseInt(id));
+                investimentoAtual.retiradas[idx] = retirada;
+            } else {
+                investimentoAtual.retiradas.push(retirada);
+            }
+
+            investimentoAtual.retiradas.sort((a, b) => new Date(b.data) - new Date(a.data));
+            
+            renderizarRetiradas();
+            atualizarDashboard();
+            cancelarEdicaoRetirada();
+            salvarAutomatico();
+        }
+
+        function editarRetirada(id) {
+            const retirada = investimentoAtual.retiradas.find(r => r.id === id);
+            if (!retirada) return;
+
+            document.getElementById('form-retirada-title').textContent = 'Editar Retirada';
+            document.getElementById('retirada-id').value = retirada.id;
+            document.getElementById('retirada-valor').value = formatarValorMonetario(retirada.valor);
+            document.getElementById('retirada-data').value = retirada.data;
+            document.getElementById('retirada-obs').value = retirada.observacoes || '';
+            document.getElementById('btn-salvar-retirada').textContent = 'Salvar';
+            document.getElementById('btn-cancelar-retirada').style.display = 'block';
+        }
+
+        function cancelarEdicaoRetirada() {
+            document.getElementById('form-retirada-title').textContent = 'Adicionar Retirada';
+            document.querySelector('#tab-retiradas form').reset();
+            document.getElementById('btn-salvar-retirada').textContent = 'Adicionar';
+            document.getElementById('btn-cancelar-retirada').style.display = 'none';
+        }
+
+        function excluirRetirada(id) {
+            if (!confirm('Excluir esta retirada?')) return;
+            investimentoAtual.retiradas = investimentoAtual.retiradas.filter(r => r.id !== id);
+            renderizarRetiradas();
+            atualizarDashboard();
+            salvarAutomatico();
+        }
+
+        function renderizarRetiradas() {
+            const container = document.getElementById('lista-retiradas');
+            
+            if (investimentoAtual.retiradas.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div style="font-size: 14px;">Nenhuma retirada registrada</div></div>';
+                return;
+            }
+
+            container.innerHTML = investimentoAtual.retiradas.map(retirada => `
+                <div class="list-item">
+                    <div class="list-info">
+                        <div class="list-main" style="color: #ef4444;">- ${formatarValorReal(retirada.valor)}</div>
+                        <div class="list-sub">${formatarData(retirada.data)}</div>
+                        ${retirada.observacoes ? `<div class="list-sub" style="font-style: italic; margin-top: 4px;">${retirada.observacoes}</div>` : ''}
+                    </div>
+                    <div class="actions-cell">
+                        <button class="icon-btn" onclick="editarRetirada(${retirada.id})" title="Editar">✏️</button>
+                        <button class="icon-btn" onclick="excluirRetirada(${retirada.id})" title="Excluir">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function atualizarDashboard() {
+            let totalInvestido = 0;
+            let patrimonioTotal = 0;
+
+            investimentos.forEach(inv => {
+                totalInvestido += inv.valorAplicado;
+
+                // Pega o último saldo pela data (não pela ordem de criação)
+                const ultimoSaldo = getUltimoSaldo(inv);
+                if (ultimoSaldo) {
+                    patrimonioTotal += ultimoSaldo.valor;
+                }
+            });
+
+            // Rendimento = diferença entre patrimônio atual e valor aplicado inicial (sem considerar aportes/retiradas)
+            const rendimento = patrimonioTotal - totalInvestido;
+            const rendimentoPercent = totalInvestido > 0 ? (rendimento / totalInvestido) * 100 : 0;
+
+            document.getElementById('patrimonio-total').textContent = formatarValorReal(patrimonioTotal);
+            document.getElementById('total-investido').textContent = formatarValorReal(totalInvestido);
+            
+            const rendValor = document.getElementById('rendimento-valor');
+            rendValor.textContent = formatarValorReal(Math.abs(rendimento));
+            rendValor.className = rendimento >= 0 ? 'metric-value positive' : 'metric-value negative';
+            
+            const rendPercent = document.getElementById('rendimento-percent');
+            rendPercent.textContent = `${rendimento >= 0 ? '+' : '-'}${Math.abs(rendimentoPercent).toFixed(2)}%`;
+            rendPercent.className = rendimento >= 0 ? 'metric-sub positive' : 'metric-sub negative';
+        }
+
+        function renderizarGrafico() {
+            const canvas = document.getElementById('chart');
+            const ctx = canvas.getContext('2d');
+            
+            // Encontrar a data de investimento mais antiga
+            let dataInicio = new Date();
+            investimentos.forEach(inv => {
+                const dataInv = new Date(inv.dataAplicacao);
+                if (dataInv < dataInicio) {
+                    dataInicio = dataInv;
+                }
+            });
+
+            // Se não tem investimentos, usar hoje - 60 dias
+            if (investimentos.length === 0) {
+                dataInicio = new Date();
+                dataInicio.setDate(dataInicio.getDate() - 60);
+            }
+
+            // Calcular dados desde a data mais antiga até hoje
+            const hoje = new Date();
+            const diffTime = Math.abs(hoje - dataInicio);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const dias = Math.max(diffDays, 60); // Mínimo 60 dias
+
+            const dadosPeriodo = [];
+            const labels = [];
+            const datasCompletas = [];
+
+            for (let i = dias - 1; i >= 0; i--) {
+                const data = new Date(hoje);
+                data.setDate(data.getDate() - i);
+                const dataStr = data.toISOString().split('T')[0];
+                
+                let totalDia = 0;
+                
+                investimentos.forEach(inv => {
+                    // Só considerar investimentos já existentes nessa data
+                    if (inv.dataAplicacao <= dataStr) {
+                        // Pega o saldo mais recente até essa data (ordenado por data)
+                        const saldosAteData = inv.saldos
+                            .filter(s => s.data <= dataStr)
+                            .sort((a, b) => new Date(b.data) - new Date(a.data));
+                        
+                        if (saldosAteData.length > 0) {
+                            totalDia += saldosAteData[0].valor;
+                        } else {
+                            // Se não tem saldo ainda, usar valor aplicado
+                            totalDia += inv.valorAplicado;
+                        }
+                    }
+                });
+
+                dadosPeriodo.push(totalDia);
+                datasCompletas.push(dataStr);
+                
+                // Labels a cada 10 dias ou no primeiro/último
+                if (i === dias - 1 || i === 0 || i % 10 === 0) {
+                    labels.push(`${data.getDate()}/${data.getMonth() + 1}`);
+                } else {
+                    labels.push('');
+                }
+            }
+
+            // Limpar canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const width = canvas.width = canvas.offsetWidth;
+            const height = canvas.height = 300;
+            const padding = 40;
+            const graphWidth = width - padding * 2;
+            const graphHeight = height - padding * 2;
+
+            // Background
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, width, height);
+
+            if (dadosPeriodo.every(v => v === 0)) {
+                ctx.fillStyle = '#64748b';
+                ctx.font = '14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Adicione investimentos para visualizar o gráfico', width / 2, height / 2);
+                return;
+            }
+
+            const maxVal = Math.max(...dadosPeriodo, 1);
+            const minVal = Math.min(...dadosPeriodo, 0);
+            const range = maxVal - minVal || 1;
+
+            // Grid horizontal
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (graphHeight / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+
+            // Linha do gráfico
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            const pontos = [];
+            dadosPeriodo.forEach((val, idx) => {
+                const x = padding + (graphWidth / (dadosPeriodo.length - 1)) * idx;
+                const y = padding + graphHeight - ((val - minVal) / range) * graphHeight;
+                
+                pontos.push({ x, y, valor: val, data: datasCompletas[idx] });
+                
+                if (idx === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+
+            ctx.stroke();
+
+            // Área sob a linha
+            ctx.lineTo(width - padding, height - padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.1)';
+            ctx.fill();
+
+            // Pontos
+            dadosPeriodo.forEach((val, idx) => {
+                const x = padding + (graphWidth / (dadosPeriodo.length - 1)) * idx;
+                const y = padding + graphHeight - ((val - minVal) / range) * graphHeight;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = '#3b82f6';
+                ctx.fill();
+            });
+
+            // Labels Y
+            ctx.fillStyle = '#64748b';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 5; i++) {
+                const val = maxVal - (range / 5) * i;
+                const y = padding + (graphHeight / 5) * i;
+                ctx.fillText(`R$ ${val.toFixed(0)}`, padding - 10, y + 4);
+            }
+
+            // Labels X
+            ctx.textAlign = 'center';
+            labels.forEach((label, idx) => {
+                if (label) {
+                    const x = padding + (graphWidth / (dadosPeriodo.length - 1)) * idx;
+                    ctx.fillText(label, x, height - 10);
+                }
+            });
+
+            // Interatividade - mousemove
+            canvas.onmousemove = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const mouseY = e.clientY - rect.top;
+
+                // Encontrar o ponto mais próximo
+                let pontoMaisProximo = null;
+                let menorDistancia = Infinity;
+
+                pontos.forEach(ponto => {
+                    const distancia = Math.sqrt(Math.pow(mouseX - ponto.x, 2) + Math.pow(mouseY - ponto.y, 2));
+                    if (distancia < menorDistancia && distancia < 20) {
+                        menorDistancia = distancia;
+                        pontoMaisProximo = ponto;
+                    }
+                });
+
+                const tooltip = document.getElementById('chart-tooltip');
+                
+                if (pontoMaisProximo) {
+                    // Mostrar tooltip
+                    const dataFormatada = formatarData(pontoMaisProximo.data);
+                    tooltip.querySelector('.tooltip-date').textContent = dataFormatada;
+                    tooltip.querySelector('.tooltip-value').textContent = `${formatarValorReal(pontoMaisProximo.valor)}`;
+                    
+                    // Posicionar tooltip relativo ao container do gráfico
+                    const containerRect = canvas.parentElement.getBoundingClientRect();
+                    const tooltipWidth = 160; // largura aproximada do tooltip
+                    const tooltipHeight = 80; // altura aproximada do tooltip
+                    
+                    let tooltipX = mouseX + 15;
+                    let tooltipY = mouseY - tooltipHeight - 10;
+                    
+                    // Ajustar se sair pela direita
+                    if (tooltipX + tooltipWidth > canvas.width) {
+                        tooltipX = mouseX - tooltipWidth - 15;
+                    }
+                    
+                    // Ajustar se sair pelo topo
+                    if (tooltipY < 0) {
+                        tooltipY = mouseY + 15;
+                    }
+                    
+                    tooltip.style.left = `${tooltipX}px`;
+                    tooltip.style.top = `${tooltipY}px`;
+                    tooltip.classList.add('active');
+
+                    // Destacar ponto
+                    ctx.clearRect(0, 0, width, height);
+                    renderizarGraficoBase(ctx, width, height, padding, graphWidth, graphHeight, dadosPeriodo, pontos, labels, maxVal, minVal, range);
+                    
+                    // Desenhar ponto destacado
+                    ctx.beginPath();
+                    ctx.arc(pontoMaisProximo.x, pontoMaisProximo.y, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = '#3b82f6';
+                    ctx.fill();
+                    ctx.strokeStyle = '#fff';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                } else {
+                    tooltip.classList.remove('active');
+                }
+            };
+
+            canvas.onmouseleave = () => {
+                document.getElementById('chart-tooltip').classList.remove('active');
+            };
+        }
+
+        function renderizarGraficoBase(ctx, width, height, padding, graphWidth, graphHeight, dadosPeriodo, pontos, labels, maxVal, minVal, range) {
+            // Background
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, width, height);
+
+            // Grid horizontal
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (graphHeight / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+
+            // Linha do gráfico
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            dadosPeriodo.forEach((val, idx) => {
+                const x = padding + (graphWidth / (dadosPeriodo.length - 1)) * idx;
+                const y = padding + graphHeight - ((val - minVal) / range) * graphHeight;
+                
+                if (idx === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+
+            ctx.stroke();
+
+            // Área sob a linha
+            ctx.lineTo(width - padding, height - padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.1)';
+            ctx.fill();
+
+            // Pontos
+            pontos.forEach(ponto => {
+                ctx.beginPath();
+                ctx.arc(ponto.x, ponto.y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = '#3b82f6';
+                ctx.fill();
+            });
+
+            // Labels Y
+            ctx.fillStyle = '#64748b';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 5; i++) {
+                const val = maxVal - (range / 5) * i;
+                const y = padding + (graphHeight / 5) * i;
+                ctx.fillText(`R$ ${val.toFixed(0)}`, padding - 10, y + 4);
+            }
+
+            // Labels X
+            ctx.textAlign = 'center';
+            labels.forEach((label, idx) => {
+                if (label) {
+                    const x = padding + (graphWidth / (dadosPeriodo.length - 1)) * idx;
+                    ctx.fillText(label, x, height - 10);
+                }
+            });
+        }
+
+        // Reconectar arquivo manualmente
+        async function reconectarArquivo() {
+            fileHandle = null;
+            await solicitarArquivo();
+            if (fileHandle) {
+                // Salvar os dados atuais no novo arquivo
+                await salvarAutomatico();
+                // Atualizar a tela
+                renderizarInvestimentos();
+                atualizarDashboard();
+                renderizarGrafico();
+                alert('✅ Arquivo reconectado com sucesso!');
+            }
+        }
+
+        function formatarData(data) {
+            if (!data) return '';
+            const [ano, mes, dia] = data.split('-');
+            return `${dia}/${mes}/${ano}`;
+        }
+
+        // Fechar modal ao clicar fora
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // Redimensionar gráfico
+        window.addEventListener('resize', renderizarGrafico);
+
+        // ===== PWA - Service Worker =====
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('✅ Service Worker registrado:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('❌ Erro ao registrar Service Worker:', error);
+                    });
+            });
+        }
+
+        // Detectar quando o PWA pode ser instalado
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            mostrarBotaoInstalar();
+        });
+
+        function mostrarBotaoInstalar() {
+            // Criar botão de instalação se não existir
+            if (!document.getElementById('btn-instalar-pwa')) {
+                const btn = document.createElement('button');
+                btn.id = 'btn-instalar-pwa';
+                btn.className = 'btn btn-primary';
+                btn.innerHTML = '📱 Instalar App';
+                btn.style.position = 'fixed';
+                btn.style.bottom = '20px';
+                btn.style.right = '20px';
+                btn.style.zIndex = '9999';
+                btn.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
+                
+                btn.onclick = async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        console.log('Resultado da instalação:', outcome);
+                        deferredPrompt = null;
+                        btn.remove();
+                    }
+                };
+                
+                document.body.appendChild(btn);
+            }
+        }
+
+        // Detectar quando o PWA foi instalado
+        window.addEventListener('appinstalled', () => {
+            console.log('✅ PWA instalado com sucesso!');
+            const btn = document.getElementById('btn-instalar-pwa');
+            if (btn) btn.remove();
+        });
+
+        // Troca de páginas
+        function trocarPagina(event, pagina) {
+            event.preventDefault();
+            
+            // Atualizar links
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Atualizar páginas
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(`page-${pagina}`).classList.add('active');
+            
+            // Se abriu a calculadora, carregar taxas
+            if (pagina === 'calculadora') {
+                carregarTaxasCalculadora();
+            }
+        }
+
+        async function carregarTaxasCalculadora() {
+            try {
+                // Buscar Selic da API do Banco Central
+                const selicResponse = await fetch('https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/1?formato=json');
+                const selicData = await selicResponse.json();
+                
+                if (selicData && selicData.length > 0) {
+                    const selic = parseFloat(selicData[0].valor);
+                    
+                    // Preencher Selic
+                    document.getElementById('calc-selic').value = formatarValorMonetario(selic);
+                    
+                    // CDI geralmente fica ~0.10% abaixo da Selic
+                    const cdi = selic - 0.10;
+                    document.getElementById('calc-cdi').value = formatarValorMonetario(cdi);
+                }
+
+                // Buscar IPCA projetado (meta dos próximos 12 meses)
+                const ipcaResponse = await fetch('https://api.bcb.gov.br/dados/serie/bcdata.sgs.13522/dados/ultimos/1?formato=json');
+                const ipcaData = await ipcaResponse.json();
+                
+                if (ipcaData && ipcaData.length > 0) {
+                    const ipca = parseFloat(ipcaData[0].valor);
+                    document.getElementById('calc-ipca').value = formatarValorMonetario(ipca);
+                }
+
+                // Calcular poupança baseado na Selic
+                // Regra: se Selic > 8.5% → 0.5% + TR, senão → 70% da Selic
+                const selicAtual = parseFloat(selicData[0].valor);
+                let poupanca;
+                if (selicAtual > 8.5) {
+                    poupanca = 0.50; // 0.5% a.m. (aproximação, TR geralmente próximo de 0)
+                } else {
+                    // 70% da Selic anual, convertido pra mensal
+                    const selicMensal = Math.pow(1 + (selicAtual * 0.70 / 100), 1/12) - 1;
+                    poupanca = selicMensal * 100;
+                }
+                document.getElementById('calc-poupanca').value = formatarValorMonetario(poupanca);
+
+            } catch (error) {
+                console.error('Erro ao carregar taxas:', error);
+                // Manter valores padrão se der erro
+            }
+        }
+
+        // Calculadora de Investimentos
+        function calcularInvestimentos() {
+            const inicial = parseValorMonetario(document.getElementById('calc-inicial').value) || 0;
+            const aporte = parseValorMonetario(document.getElementById('calc-aporte').value) || 0;
+            const meses = parseInt(document.getElementById('calc-periodo').value) || 12;
+            
+            const selic = parseValorMonetario(document.getElementById('calc-selic').value) / 100;
+            const cdi = parseValorMonetario(document.getElementById('calc-cdi').value) / 100;
+            const ipca = parseValorMonetario(document.getElementById('calc-ipca').value) / 100;
+            const poupancaMensal = parseValorMonetario(document.getElementById('calc-poupanca').value) / 100;
+            
+            const cdbPercent = parseValorMonetario(document.getElementById('calc-cdb-percent').value) / 100;
+            const lciPercent = parseValorMonetario(document.getElementById('calc-lci-percent').value) / 100;
+            const tesouroPercent = parseValorMonetario(document.getElementById('calc-tesouro-percent').value) / 100;
+
+            const totalInvestido = inicial + (aporte * meses);
+
+            // Determinar alíquota de IR pela tabela regressiva
+            const aliquotaIR = getAliquotaIR(meses);
+
+            // Cálculos
+            const resultados = [
+                calcularRendimento('CDB', inicial, aporte, meses, cdi * cdbPercent, totalInvestido, aliquotaIR),
+                calcularRendimento('LCI/LCA', inicial, aporte, meses, cdi * lciPercent, totalInvestido, 0), // Isento
+                calcularRendimento('Tesouro Selic', inicial, aporte, meses, selic * tesouroPercent, totalInvestido, aliquotaIR, 0.002), // Taxa custódia 0.2% a.a.
+                calcularRendimento('Poupança', inicial, aporte, meses, poupancaMensal, totalInvestido, 0, 0, true)
+            ];
+
+            // Ordenar por valor líquido (maior primeiro)
+            resultados.sort((a, b) => b.valorLiquido - a.valorLiquido);
+
+            // Renderizar resultados
+            const container = document.getElementById('calc-results-container');
+            container.innerHTML = resultados.map((r, idx) => `
+                <div class="calc-result-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                                ${idx === 0 ? '🏆 Melhor opção' : `${idx + 1}º lugar`}
+                            </div>
+                            <div class="calc-result-name" style="font-size: 16px; color: #fff; font-weight: 600; margin: 0;">${r.nome}</div>
+                        </div>
+                    </div>
+                    <div class="calc-result-value">${formatarValorReal(r.valorLiquido)}</div>
+                    <div class="calc-result-details">
+                        <div style="display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid #1e293b;">
+                            <span>Total investido:</span>
+                            <strong>${formatarValorReal(totalInvestido)}</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                            <span>Rendimento bruto:</span>
+                            <strong style="color: #3b82f6;">${formatarValorReal(r.rendimentoBruto)}</strong>
+                        </div>
+                        ${r.ir > 0 ? `
+                            <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                                <span>IR (${(r.aliquota * 100).toFixed(1)}%):</span>
+                                <strong style="color: #ef4444;">- ${formatarValorReal(r.ir)}</strong>
+                            </div>
+                        ` : ''}
+                        ${r.custodia > 0 ? `
+                            <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                                <span>Taxa custódia:</span>
+                                <strong style="color: #ef4444;">- ${formatarValorReal(r.custodia)}</strong>
+                            </div>
+                        ` : ''}
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                            <span>Rendimento líquido:</span>
+                            <strong style="color: #10b981;">${formatarValorReal(r.rendimentoLiquido)}</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 8px;">
+                            <span>Rentabilidade:</span>
+                            <strong style="color: #10b981;">${r.rentabilidade.toFixed(2)}%</strong>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Tabela regressiva de IR para investimentos
+        function getAliquotaIR(meses) {
+            if (meses <= 6) return 0.225;      // Até 6 meses: 22,5%
+            if (meses <= 12) return 0.20;      // 6 a 12 meses: 20%
+            if (meses <= 24) return 0.175;     // 12 a 24 meses: 17,5%
+            return 0.15;                        // Acima de 24 meses: 15%
+        }
+
+        function calcularRendimento(nome, inicial, aporte, meses, taxaAnual, totalInvestido, aliquotaIR, taxaCustodia = 0, isPoupanca = false) {
+            let saldo = inicial;
+            let rendimentoBruto = 0;
+
+            if (isPoupanca) {
+                // Poupança: rendimento mensal simples
+                for (let i = 0; i < meses; i++) {
+                    saldo = saldo + aporte;
+                    const rendMes = saldo * taxaAnual;
+                    rendimentoBruto += rendMes;
+                    saldo += rendMes;
+                }
+            } else {
+                // Outros: juros compostos mensais
+                const taxaMensal = Math.pow(1 + taxaAnual, 1/12) - 1;
+                
+                for (let i = 0; i < meses; i++) {
+                    saldo = saldo + aporte;
+                    const rendMes = saldo * taxaMensal;
+                    rendimentoBruto += rendMes;
+                    saldo += rendMes;
+                }
+            }
+
+            // Custos
+            const valorCustodia = taxaCustodia ? (saldo * taxaCustodia * (meses / 12)) : 0;
+            const valorIR = aliquotaIR ? (rendimentoBruto * aliquotaIR) : 0;
+
+            const valorLiquido = saldo - valorCustodia - valorIR;
+            const rendimentoLiquido = valorLiquido - totalInvestido;
+            const rentabilidade = (rendimentoLiquido / totalInvestido) * 100;
+
+            return {
+                nome,
+                valorLiquido,
+                rendimentoBruto,
+                ir: valorIR,
+                aliquota: aliquotaIR,
+                custodia: valorCustodia,
+                rendimentoLiquido,
+                rentabilidade
+            };
+        }
+    </script>
+</body>
+</html>
