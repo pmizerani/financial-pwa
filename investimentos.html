@@ -580,6 +580,8 @@
         .actions-cell {
             display: flex;
             gap: 8px;
+            justify-content: center;
+            align-items: center;
         }
 
         .icon-btn {
@@ -654,7 +656,7 @@
 
         .calc-inputs-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -724,6 +726,12 @@
             margin-bottom: 50px;
         }
 
+        @media (max-width: 1400px) {
+            .calc-inputs-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 900px) {
             .calc-inputs-row {
                 grid-template-columns: 1fr;
@@ -770,45 +778,75 @@
                 </div>
 
                 <div class="calc-inputs-group">
-                    <h2 class="calc-section-title">Taxas de Mercado</h2>
-
-                    <div class="form-group">
-                        <label class="form-label">Taxa Selic (% a.a.)</label>
-                        <input type="text" class="form-input calc-percent" id="calc-selic" value="10,75">
+                    <h2 class="calc-section-title">Taxa de Mercado</h2>
+                    
+                    <div class="metric-card" style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+                        <div class="metric-label" style="font-size: 13px; color: #94a3b8; margin-bottom: 8px;">Taxa Selic</div>
+                        <div class="metric-value" id="taxa-selic-calc" style="font-size: 24px; font-weight: 700; color: #e2e8f0;">
+                            <span style="font-size: 16px; color: #64748b;">Carregando...</span>
+                        </div>
+                        <div class="metric-sub" id="selic-atualizacao-calc" style="font-size: 12px; color: #64748b; margin-top: 4px;"></div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">CDI (% a.a.)</label>
-                        <input type="text" class="form-input calc-percent" id="calc-cdi" value="10,65">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">IPCA (% a.a.)</label>
-                        <input type="text" class="form-input calc-percent" id="calc-ipca" value="4,50">
+                    <div class="metric-card" style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 16px;">
+                        <div class="metric-label" style="font-size: 13px; color: #94a3b8; margin-bottom: 8px;">CDI Customizado</div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                            <input 
+                                type="text" 
+                                value="100,00" 
+                                id="input-percentual-cdi-calc"
+                                onchange="calcularCDICalc()"
+                                placeholder="100,00"
+                                style="width: 120px; padding: 8px; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: #e2e8f0; font-size: 16px; font-weight: 600;"
+                            >
+                            <span style="color: #94a3b8; font-weight: 600;">% do CDI</span>
+                        </div>
+                        <div class="metric-value" id="taxa-cdi-calc" style="margin-top: 12px; font-size: 24px; font-weight: 700; color: #e2e8f0;">-</div>
+                        <div class="metric-sub" style="font-size: 12px; color: #64748b; margin-top: 4px;">Taxa anual equivalente</div>
                     </div>
                 </div>
 
                 <div class="calc-inputs-group">
-                    <h2 class="calc-section-title">Rentabilidades</h2>
-
-                    <div class="form-group">
-                        <label class="form-label">CDB (% do CDI)</label>
+                    <h2 class="calc-section-title">CDB</h2>
+                    <div class="radio-group" style="grid-template-columns: 1fr 1fr; margin-bottom: 12px;">
+                        <label class="radio-label">
+                            <input type="radio" name="cdb-tipo" value="pos" checked onchange="toggleCalcTipo('cdb')">
+                            <span>📈 Pós-fixado</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="cdb-tipo" value="pre" onchange="toggleCalcTipo('cdb')">
+                            <span>💰 Pré-fixado</span>
+                        </label>
+                    </div>
+                    <div id="cdb-pos">
+                        <label class="form-label">% do CDI</label>
                         <input type="text" class="form-input calc-percent" id="calc-cdb-percent" value="100,00">
                     </div>
+                    <div id="cdb-pre" style="display: none;">
+                        <label class="form-label">% ao ano</label>
+                        <input type="text" class="form-input calc-percent" id="calc-cdb-pre" value="12,00">
+                    </div>
+                </div>
 
-                    <div class="form-group">
-                        <label class="form-label">LCI/LCA (% do CDI)</label>
+                <div class="calc-inputs-group">
+                    <h2 class="calc-section-title">LCI/LCA</h2>
+                    <div class="radio-group" style="grid-template-columns: 1fr 1fr; margin-bottom: 12px;">
+                        <label class="radio-label">
+                            <input type="radio" name="lci-tipo" value="pos" checked onchange="toggleCalcTipo('lci')">
+                            <span>📈 Pós-fixado</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="lci-tipo" value="pre" onchange="toggleCalcTipo('lci')">
+                            <span>💰 Pré-fixado</span>
+                        </label>
+                    </div>
+                    <div id="lci-pos">
+                        <label class="form-label">% do CDI</label>
                         <input type="text" class="form-input calc-percent" id="calc-lci-percent" value="85,00">
                     </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Tesouro Selic (% da Selic)</label>
-                        <input type="text" class="form-input calc-percent" id="calc-tesouro-percent" value="100,00">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Poupança (% a.m.)</label>
-                        <input type="text" class="form-input calc-percent" id="calc-poupanca" value="0,50">
+                    <div id="lci-pre" style="display: none;">
+                        <label class="form-label">% ao ano</label>
+                        <input type="text" class="form-input calc-percent" id="calc-lci-pre" value="10,00">
                     </div>
                 </div>
             </div>
@@ -840,17 +878,17 @@
                 <div class="metric-value" id="total-investido">R$ 0,00</div>
             </div>
             <div class="metric-card">
+                <div class="metric-label">Total Retirado</div>
+                <div class="metric-value" id="total-retirado">R$ 0,00</div>
+            </div>
+            <div class="metric-card">
                 <div class="metric-label">Rendimento</div>
                 <div class="metric-value" id="rendimento-valor">R$ 0,00</div>
                 <div class="metric-sub" id="rendimento-percent">0%</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-label">Investimentos</div>
-                <div class="metric-value" id="total-investimentos">0</div>
-            </div>
         </div>
 
-        <div class="dashboard" style="grid-template-columns: repeat(2, 1fr);">
+        <div class="dashboard" style="grid-template-columns: repeat(3, 1fr);">
             <div class="metric-card">
                 <div class="metric-label">Taxa Selic</div>
                 <div class="metric-value" id="taxa-selic">
@@ -873,6 +911,10 @@
                 </div>
                 <div class="metric-value" id="taxa-cdi" style="margin-top: 12px;">-</div>
                 <div class="metric-sub">Taxa anual equivalente</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Total de Investimentos</div>
+                <div class="metric-value" id="total-investimentos">0</div>
             </div>
         </div>
 
@@ -897,11 +939,12 @@
                             <th>Nome</th>
                             <th>Tipo</th>
                             <th>Valor Aplicado</th>
+                            <th>Total Aportes</th>
+                            <th>Total Retiradas</th>
                             <th>Último Saldo</th>
                             <th>Rendimento</th>
                             <th>Liquidez</th>
                             <th>Taxa</th>
-                            <th>Data Aplicação</th>
                             <th style="width: 150px;">Ações</th>
                         </tr>
                     </thead>
@@ -1043,6 +1086,10 @@
                                 <button type="button" class="btn-today" onclick="setDataHoje('saldo-data')">📅 Hoje</button>
                             </div>
                         </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label class="form-label">Observações (opcional)</label>
+                        <textarea class="form-input" name="obsSaldo" id="saldo-obs" rows="2" placeholder="Ex: Rendimento do mês, ajuste de valor..."></textarea>
                     </div>
                     <div style="display: flex; gap: 10px; margin-top: 15px;">
                         <button type="submit" class="btn btn-primary" style="flex: 1;" id="btn-salvar-saldo">Adicionar</button>
@@ -1450,12 +1497,23 @@
                     taxaSelicAtual = parseFloat(data[0].valor);
                     const dataAtualizacao = data[0].data;
                     
-                    // Taxa Selic anual
+                    // Taxa Selic anual (dashboard)
                     document.getElementById('taxa-selic').innerHTML = `${taxaSelicAtual.toFixed(2)}% <span style="font-size: 16px; color: #64748b;">a.a.</span>`;
                     document.getElementById('selic-atualizacao').textContent = `Atualizado em ${dataAtualizacao}`;
                     
-                    // Calcular CDI inicial
+                    // Taxa Selic anual (calculadora)
+                    const taxaSelicCalc = document.getElementById('taxa-selic-calc');
+                    const selicAtualizacaoCalc = document.getElementById('selic-atualizacao-calc');
+                    if (taxaSelicCalc) {
+                        taxaSelicCalc.innerHTML = `${taxaSelicAtual.toFixed(2)}% <span style="font-size: 16px; color: #64748b;">a.a.</span>`;
+                    }
+                    if (selicAtualizacaoCalc) {
+                        selicAtualizacaoCalc.textContent = `Atualizado em ${dataAtualizacao}`;
+                    }
+                    
+                    // Calcular CDI inicial (dashboard e calculadora)
                     calcularCDI();
+                    calcularCDICalc();
                 }
             } catch (error) {
                 document.getElementById('taxa-selic').innerHTML = '<span style="font-size: 16px; color: #ef4444;">Erro ao carregar</span>';
@@ -1474,6 +1532,19 @@
                 const cdiCustomizado = (cdiBase * percentualCDI) / 100;
                 
                 document.getElementById('taxa-cdi').innerHTML = `${cdiCustomizado.toFixed(2)}% <span style="font-size: 16px; color: #64748b;">a.a.</span>`;
+            }
+        }
+
+        function calcularCDICalc() {
+            const percentualInput = document.getElementById('input-percentual-cdi-calc').value;
+            const percentualCDI = parseValorMonetario(percentualInput) || 100;
+            
+            if (taxaSelicAtual > 0) {
+                // CDI base fica ~0.10% abaixo da Selic
+                const cdiBase = taxaSelicAtual - 0.10;
+                const cdiCustomizado = (cdiBase * percentualCDI) / 100;
+                
+                document.getElementById('taxa-cdi-calc').innerHTML = `${cdiCustomizado.toFixed(2)}% <span style="font-size: 16px; color: #64748b;">a.a.</span>`;
             }
         }
 
@@ -1602,7 +1673,7 @@
             const tbody = document.getElementById('investments-list');
             
             if (investimentos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px; color: #64748b;">Nenhum investimento cadastrado</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 40px; color: #64748b;">Nenhum investimento cadastrado</td></tr>';
                 return;
             }
 
@@ -1610,13 +1681,32 @@
                 const ultimoSaldo = getUltimoSaldo(inv);
                 const taxaLabel = inv.modalidade === 'pre' ? `${inv.taxa}% a.a.` : `${inv.taxa}% CDI`;
                 
+                // Calcular total de aportes
+                let totalAportes = 0;
+                if (inv.aportes && inv.aportes.length > 0) {
+                    inv.aportes.forEach(aporte => {
+                        totalAportes += aporte.valor;
+                    });
+                }
+                
+                // Calcular total de retiradas
+                let totalRetiradas = 0;
+                if (inv.retiradas && inv.retiradas.length > 0) {
+                    inv.retiradas.forEach(retirada => {
+                        totalRetiradas += retirada.valor;
+                    });
+                }
+                
+                // Total investido = aplicado + aportes (SEM retiradas)
+                let totalInvestidoNeste = inv.valorAplicado + totalAportes;
+                
                 let rendimentoValor = 0;
                 let rendimentoPercent = 0;
                 let rendimentoHtml = '-';
                 
                 if (ultimoSaldo) {
-                    rendimentoValor = ultimoSaldo.valor - inv.valorAplicado;
-                    rendimentoPercent = (rendimentoValor / inv.valorAplicado) * 100;
+                    rendimentoValor = ultimoSaldo.valor - totalInvestidoNeste;
+                    rendimentoPercent = totalInvestidoNeste > 0 ? (rendimentoValor / totalInvestidoNeste) * 100 : 0;
                     const cor = rendimentoValor >= 0 ? '#10b981' : '#ef4444';
                     const sinal = rendimentoValor >= 0 ? '+' : '';
                     rendimentoHtml = `
@@ -1629,17 +1719,33 @@
 
                 const liquidezLabel = inv.liquidez === 'diaria' ? 'Diária' : formatarData(inv.dataVencimento);
                 
+                // Verificar se está próximo do vencimento (7 dias)
+                let proximoVencimento = false;
+                let diasRestantes = 0;
+                if (inv.liquidez === 'vencimento' && inv.dataVencimento) {
+                    const hoje = new Date();
+                    const vencimento = new Date(inv.dataVencimento + 'T00:00:00');
+                    const diff = vencimento - hoje;
+                    diasRestantes = Math.ceil(diff / (1000 * 60 * 60 * 24));
+                    proximoVencimento = diasRestantes >= 0 && diasRestantes <= 7;
+                }
+                
                 return `
-                    <tr onclick="handleRowClick(event, ${inv.id})">
-                        <td><strong>${inv.nome}</strong></td>
+                    <tr onclick="handleRowClick(event, ${inv.id})" ${proximoVencimento ? 'style="background: rgba(251, 191, 36, 0.1);"' : ''}>
+                        <td ${proximoVencimento ? 'style="border-left: 3px solid #fbbf24;"' : ''}>
+                            <strong>${inv.nome}</strong>
+                            ${proximoVencimento ? `<br><span style="font-size: 12px; color: #fbbf24; font-weight: 600;">⚠️ Vence em ${diasRestantes} dia${diasRestantes !== 1 ? 's' : ''}</span>` : ''}
+                            ${inv.observacoes ? `<br><span style="font-size: 12px; color: #64748b; font-style: italic;">${inv.observacoes}</span>` : ''}
+                        </td>
                         <td><span class="badge badge-blue">${inv.tipo}</span></td>
-                        <td>${formatarValorReal(inv.valorAplicado)}</td>
+                        <td>${formatarValorReal(inv.valorAplicado + totalAportes)}</td>
+                        <td>${totalAportes > 0 ? formatarValorReal(totalAportes) : '-'}</td>
+                        <td>${totalRetiradas > 0 ? `<span style="color: #ef4444;">${formatarValorReal(totalRetiradas)}</span>` : '-'}</td>
                         <td>${ultimoSaldo ? `<strong style="color: #10b981;">${formatarValorReal(ultimoSaldo.valor)}</strong>` : '-'}</td>
                         <td>${rendimentoHtml}</td>
                         <td>${liquidezLabel}</td>
                         <td>${taxaLabel}</td>
-                        <td>${formatarData(inv.dataAplicacao)}</td>
-                        <td class="actions-cell">
+                        <td class="actions-cell" ${proximoVencimento ? 'style="border-bottom: none;"' : ''}>
                             <button class="icon-btn" onclick="event.stopPropagation(); abrirAdicionarSaldoRapido(${inv.id})" title="Adicionar saldo">💰</button>
                             <button class="icon-btn" onclick="event.stopPropagation(); editarInvestimento(${inv.id})" title="Editar">✏️</button>
                             <button class="icon-btn" onclick="event.stopPropagation(); excluirInvestimento(${inv.id})" title="Excluir">🗑️</button>
@@ -1675,16 +1781,69 @@
                 ? `${investimentoAtual.taxa}% a.a.` 
                 : `${investimentoAtual.taxa}% do CDI`;
 
+            // Calcular total de aportes
+            let totalAportes = 0;
+            if (investimentoAtual.aportes && investimentoAtual.aportes.length > 0) {
+                investimentoAtual.aportes.forEach(aporte => {
+                    totalAportes += aporte.valor;
+                });
+            }
+            
+            // Calcular total de retiradas
+            let totalRetiradas = 0;
+            if (investimentoAtual.retiradas && investimentoAtual.retiradas.length > 0) {
+                investimentoAtual.retiradas.forEach(retirada => {
+                    totalRetiradas += retirada.valor;
+                });
+            }
+
             document.getElementById('detalhes-info').innerHTML = `
                 <div class="detail-row">
                     <div class="detail-label">Tipo</div>
                     <div class="detail-value">${investimentoAtual.tipo}</div>
                 </div>
                 <div class="detail-row">
-                    <div class="detail-label">Valor Aplicado</div>
+                    <div class="detail-label">Valor Inicial</div>
                     <div class="detail-value">${formatarValorReal(investimentoAtual.valorAplicado)}</div>
                 </div>
+                ${totalAportes > 0 ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Total de Aportes</div>
+                        <div class="detail-value" style="color: #10b981;">${formatarValorReal(totalAportes)}</div>
+                    </div>
+                ` : ''}
                 <div class="detail-row">
+                    <div class="detail-label">Valor Total Aplicado</div>
+                    <div class="detail-value"><strong>${formatarValorReal(investimentoAtual.valorAplicado + totalAportes)}</strong></div>
+                </div>
+                ${totalRetiradas > 0 ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Total de Retiradas</div>
+                        <div class="detail-value" style="color: #ef4444;">${formatarValorReal(totalRetiradas)}</div>
+                    </div>
+                ` : ''}
+                <div class="detail-row" style="margin-top: 12px;">
+                    <div class="detail-label">Saldo Atual</div>
+                    <div class="detail-value"><strong style="color: #10b981; font-size: 18px;">${getUltimoSaldo(investimentoAtual) ? formatarValorReal(getUltimoSaldo(investimentoAtual).valor) : 'Sem saldo registrado'}</strong></div>
+                </div>
+                ${getUltimoSaldo(investimentoAtual) ? (() => {
+                    const ultimoSaldo = getUltimoSaldo(investimentoAtual);
+                    const totalInvestido = investimentoAtual.valorAplicado + totalAportes;
+                    const rendimento = ultimoSaldo.valor - totalInvestido;
+                    const rendimentoPercent = totalInvestido > 0 ? (rendimento / totalInvestido) * 100 : 0;
+                    const cor = rendimento >= 0 ? '#10b981' : '#ef4444';
+                    const sinal = rendimento >= 0 ? '+' : '';
+                    return `
+                        <div class="detail-row">
+                            <div class="detail-label">Rendimento</div>
+                            <div class="detail-value">
+                                <strong style="color: ${cor};">${sinal}${formatarValorReal(rendimento)}</strong>
+                                <span style="font-size: 13px; color: ${cor}; margin-left: 8px;">(${sinal}${rendimentoPercent.toFixed(2)}%)</span>
+                            </div>
+                        </div>
+                    `;
+                })() : ''}
+                <div class="detail-row" style="margin-top: 12px;">
                     <div class="detail-label">Data da Aplicação</div>
                     <div class="detail-value">${formatarData(investimentoAtual.dataAplicacao)}</div>
                 </div>
@@ -1743,16 +1902,69 @@
                 ? `${investimentoAtual.taxa}% a.a.` 
                 : `${investimentoAtual.taxa}% do CDI`;
 
+            // Calcular total de aportes
+            let totalAportes = 0;
+            if (investimentoAtual.aportes && investimentoAtual.aportes.length > 0) {
+                investimentoAtual.aportes.forEach(aporte => {
+                    totalAportes += aporte.valor;
+                });
+            }
+            
+            // Calcular total de retiradas
+            let totalRetiradas = 0;
+            if (investimentoAtual.retiradas && investimentoAtual.retiradas.length > 0) {
+                investimentoAtual.retiradas.forEach(retirada => {
+                    totalRetiradas += retirada.valor;
+                });
+            }
+
             document.getElementById('detalhes-info').innerHTML = `
                 <div class="detail-row">
                     <div class="detail-label">Tipo</div>
                     <div class="detail-value">${investimentoAtual.tipo}</div>
                 </div>
                 <div class="detail-row">
-                    <div class="detail-label">Valor Aplicado</div>
+                    <div class="detail-label">Valor Inicial</div>
                     <div class="detail-value">${formatarValorReal(investimentoAtual.valorAplicado)}</div>
                 </div>
+                ${totalAportes > 0 ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Total de Aportes</div>
+                        <div class="detail-value" style="color: #10b981;">${formatarValorReal(totalAportes)}</div>
+                    </div>
+                ` : ''}
                 <div class="detail-row">
+                    <div class="detail-label">Valor Total Aplicado</div>
+                    <div class="detail-value"><strong>${formatarValorReal(investimentoAtual.valorAplicado + totalAportes)}</strong></div>
+                </div>
+                ${totalRetiradas > 0 ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Total de Retiradas</div>
+                        <div class="detail-value" style="color: #ef4444;">${formatarValorReal(totalRetiradas)}</div>
+                    </div>
+                ` : ''}
+                <div class="detail-row" style="margin-top: 12px;">
+                    <div class="detail-label">Saldo Atual</div>
+                    <div class="detail-value"><strong style="color: #10b981; font-size: 18px;">${getUltimoSaldo(investimentoAtual) ? formatarValorReal(getUltimoSaldo(investimentoAtual).valor) : 'Sem saldo registrado'}</strong></div>
+                </div>
+                ${getUltimoSaldo(investimentoAtual) ? (() => {
+                    const ultimoSaldo = getUltimoSaldo(investimentoAtual);
+                    const totalInvestido = investimentoAtual.valorAplicado + totalAportes;
+                    const rendimento = ultimoSaldo.valor - totalInvestido;
+                    const rendimentoPercent = totalInvestido > 0 ? (rendimento / totalInvestido) * 100 : 0;
+                    const cor = rendimento >= 0 ? '#10b981' : '#ef4444';
+                    const sinal = rendimento >= 0 ? '+' : '';
+                    return `
+                        <div class="detail-row">
+                            <div class="detail-label">Rendimento</div>
+                            <div class="detail-value">
+                                <strong style="color: ${cor};">${sinal}${formatarValorReal(rendimento)}</strong>
+                                <span style="font-size: 13px; color: ${cor}; margin-left: 8px;">(${sinal}${rendimentoPercent.toFixed(2)}%)</span>
+                            </div>
+                        </div>
+                    `;
+                })() : ''}
+                <div class="detail-row" style="margin-top: 12px;">
                     <div class="detail-label">Data da Aplicação</div>
                     <div class="detail-value">${formatarData(investimentoAtual.dataAplicacao)}</div>
                 </div>
@@ -1797,6 +2009,106 @@
             document.getElementById(`tab-${tab}`).classList.add('active');
         }
 
+        function atualizarDetalhesModal() {
+            if (!investimentoAtual) return;
+            
+            const taxaLabel = investimentoAtual.modalidade === 'pre' 
+                ? `${investimentoAtual.taxa}% a.a.` 
+                : `${investimentoAtual.taxa}% do CDI`;
+
+            // Calcular total de aportes
+            let totalAportes = 0;
+            if (investimentoAtual.aportes && investimentoAtual.aportes.length > 0) {
+                investimentoAtual.aportes.forEach(aporte => {
+                    totalAportes += aporte.valor;
+                });
+            }
+            
+            // Calcular total de retiradas
+            let totalRetiradas = 0;
+            if (investimentoAtual.retiradas && investimentoAtual.retiradas.length > 0) {
+                investimentoAtual.retiradas.forEach(retirada => {
+                    totalRetiradas += retirada.valor;
+                });
+            }
+
+            document.getElementById('detalhes-info').innerHTML = `
+                <div class="detail-row">
+                    <div class="detail-label">Tipo</div>
+                    <div class="detail-value">${investimentoAtual.tipo}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Valor Inicial</div>
+                    <div class="detail-value">${formatarValorReal(investimentoAtual.valorAplicado)}</div>
+                </div>
+                ${totalAportes > 0 ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Total de Aportes</div>
+                        <div class="detail-value" style="color: #10b981;">${formatarValorReal(totalAportes)}</div>
+                    </div>
+                ` : ''}
+                <div class="detail-row">
+                    <div class="detail-label">Valor Total Aplicado</div>
+                    <div class="detail-value"><strong>${formatarValorReal(investimentoAtual.valorAplicado + totalAportes)}</strong></div>
+                </div>
+                ${totalRetiradas > 0 ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Total de Retiradas</div>
+                        <div class="detail-value" style="color: #ef4444;">${formatarValorReal(totalRetiradas)}</div>
+                    </div>
+                ` : ''}
+                <div class="detail-row" style="margin-top: 12px;">
+                    <div class="detail-label">Saldo Atual</div>
+                    <div class="detail-value"><strong style="color: #10b981; font-size: 18px;">${getUltimoSaldo(investimentoAtual) ? formatarValorReal(getUltimoSaldo(investimentoAtual).valor) : 'Sem saldo registrado'}</strong></div>
+                </div>
+                ${getUltimoSaldo(investimentoAtual) ? (() => {
+                    const ultimoSaldo = getUltimoSaldo(investimentoAtual);
+                    const totalInvestido = investimentoAtual.valorAplicado + totalAportes;
+                    const rendimento = ultimoSaldo.valor - totalInvestido;
+                    const rendimentoPercent = totalInvestido > 0 ? (rendimento / totalInvestido) * 100 : 0;
+                    const cor = rendimento >= 0 ? '#10b981' : '#ef4444';
+                    const sinal = rendimento >= 0 ? '+' : '';
+                    return `
+                        <div class="detail-row">
+                            <div class="detail-label">Rendimento</div>
+                            <div class="detail-value">
+                                <strong style="color: ${cor};">${sinal}${formatarValorReal(rendimento)}</strong>
+                                <span style="font-size: 13px; color: ${cor}; margin-left: 8px;">(${sinal}${rendimentoPercent.toFixed(2)}%)</span>
+                            </div>
+                        </div>
+                    `;
+                })() : ''}
+                <div class="detail-row" style="margin-top: 12px;">
+                    <div class="detail-label">Data da Aplicação</div>
+                    <div class="detail-value">${formatarData(investimentoAtual.dataAplicacao)}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Modalidade</div>
+                    <div class="detail-value">${investimentoAtual.modalidade === 'pre' ? 'Pré-fixado' : 'Pós-fixado'}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Rentabilidade</div>
+                    <div class="detail-value">${taxaLabel}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Liquidez</div>
+                    <div class="detail-value">${investimentoAtual.liquidez === 'diaria' ? 'Diária' : 'Com Vencimento'}</div>
+                </div>
+                ${investimentoAtual.dataVencimento ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Vencimento</div>
+                        <div class="detail-value">${formatarData(investimentoAtual.dataVencimento)}</div>
+                    </div>
+                ` : ''}
+                ${investimentoAtual.observacoes ? `
+                    <div class="detail-row">
+                        <div class="detail-label">Observações</div>
+                        <div class="detail-value">${investimentoAtual.observacoes}</div>
+                    </div>
+                ` : ''}
+            `;
+        }
+
         // Saldos
         function salvarSaldo(event) {
             event.preventDefault();
@@ -1807,7 +2119,8 @@
             const saldo = {
                 id: id ? parseInt(id) : Date.now(),
                 valor: parseValorMonetario(formData.get('valorSaldo')),
-                data: formData.get('dataSaldo')
+                data: formData.get('dataSaldo'),
+                observacoes: formData.get('obsSaldo')
             };
 
             if (id) {
@@ -1823,6 +2136,7 @@
             renderizarInvestimentos();
             atualizarDashboard();
             renderizarGrafico();
+            atualizarDetalhesModal();
             cancelarEdicaoSaldo();
             salvarAutomatico();
         }
@@ -1835,6 +2149,7 @@
             document.getElementById('saldo-id').value = saldo.id;
             document.getElementById('saldo-valor').value = formatarValorMonetario(saldo.valor);
             document.getElementById('saldo-data').value = saldo.data;
+            document.getElementById('saldo-obs').value = saldo.observacoes || '';
             document.getElementById('btn-salvar-saldo').textContent = 'Salvar';
             document.getElementById('btn-cancelar-saldo').style.display = 'block';
         }
@@ -1853,6 +2168,7 @@
             renderizarInvestimentos();
             atualizarDashboard();
             renderizarGrafico();
+            atualizarDetalhesModal();
             salvarAutomatico();
         }
 
@@ -1869,6 +2185,7 @@
                     <div class="list-info">
                         <div class="list-main">${formatarValorReal(saldo.valor)}</div>
                         <div class="list-sub">${formatarData(saldo.data)}</div>
+                        ${saldo.observacoes ? `<div class="list-sub" style="font-style: italic; margin-top: 4px;">${saldo.observacoes}</div>` : ''}
                     </div>
                     <div class="actions-cell">
                         <button class="icon-btn" onclick="editarSaldo(${saldo.id})" title="Editar">✏️</button>
@@ -1902,7 +2219,10 @@
             investimentoAtual.aportes.sort((a, b) => new Date(b.data) - new Date(a.data));
             
             renderizarAportes();
+            renderizarInvestimentos();
             atualizarDashboard();
+            renderizarGrafico();
+            atualizarDetalhesModal();
             cancelarEdicaoAporte();
             salvarAutomatico();
         }
@@ -1931,7 +2251,10 @@
             if (!confirm('Excluir este aporte?')) return;
             investimentoAtual.aportes = investimentoAtual.aportes.filter(a => a.id !== id);
             renderizarAportes();
+            renderizarInvestimentos();
             atualizarDashboard();
+            renderizarGrafico();
+            atualizarDetalhesModal();
             salvarAutomatico();
         }
 
@@ -1982,7 +2305,10 @@
             investimentoAtual.retiradas.sort((a, b) => new Date(b.data) - new Date(a.data));
             
             renderizarRetiradas();
+            renderizarInvestimentos();
             atualizarDashboard();
+            renderizarGrafico();
+            atualizarDetalhesModal();
             cancelarEdicaoRetirada();
             salvarAutomatico();
         }
@@ -2011,7 +2337,10 @@
             if (!confirm('Excluir esta retirada?')) return;
             investimentoAtual.retiradas = investimentoAtual.retiradas.filter(r => r.id !== id);
             renderizarRetiradas();
+            renderizarInvestimentos();
             atualizarDashboard();
+            renderizarGrafico();
+            atualizarDetalhesModal();
             salvarAutomatico();
         }
 
@@ -2040,10 +2369,28 @@
 
         function atualizarDashboard() {
             let totalInvestido = 0;
+            let totalRetirado = 0;
             let patrimonioTotal = 0;
 
             investimentos.forEach(inv => {
-                totalInvestido += inv.valorAplicado;
+                // Total investido = valor aplicado + aportes (SEM considerar retiradas)
+                let investidoNeste = inv.valorAplicado;
+                
+                // Somar aportes
+                if (inv.aportes && inv.aportes.length > 0) {
+                    inv.aportes.forEach(aporte => {
+                        investidoNeste += aporte.valor;
+                    });
+                }
+                
+                // Somar retiradas para exibir no card separado
+                if (inv.retiradas && inv.retiradas.length > 0) {
+                    inv.retiradas.forEach(retirada => {
+                        totalRetirado += retirada.valor;
+                    });
+                }
+                
+                totalInvestido += investidoNeste;
 
                 // Pega o último saldo pela data (não pela ordem de criação)
                 const ultimoSaldo = getUltimoSaldo(inv);
@@ -2052,12 +2399,13 @@
                 }
             });
 
-            // Rendimento = diferença entre patrimônio atual e valor aplicado inicial (sem considerar aportes/retiradas)
+            // Rendimento = diferença entre patrimônio atual e total investido (aportes incluídos, retiradas não)
             const rendimento = patrimonioTotal - totalInvestido;
             const rendimentoPercent = totalInvestido > 0 ? (rendimento / totalInvestido) * 100 : 0;
 
             document.getElementById('patrimonio-total').textContent = formatarValorReal(patrimonioTotal);
             document.getElementById('total-investido').textContent = formatarValorReal(totalInvestido);
+            document.getElementById('total-retirado').textContent = formatarValorReal(totalRetirado);
             
             const rendValor = document.getElementById('rendimento-valor');
             rendValor.textContent = formatarValorReal(Math.abs(rendimento));
@@ -2072,26 +2420,9 @@
             const canvas = document.getElementById('chart');
             const ctx = canvas.getContext('2d');
             
-            // Encontrar a data de investimento mais antiga
-            let dataInicio = new Date();
-            investimentos.forEach(inv => {
-                const dataInv = new Date(inv.dataAplicacao);
-                if (dataInv < dataInicio) {
-                    dataInicio = dataInv;
-                }
-            });
-
-            // Se não tem investimentos, usar hoje - 60 dias
-            if (investimentos.length === 0) {
-                dataInicio = new Date();
-                dataInicio.setDate(dataInicio.getDate() - 60);
-            }
-
-            // Calcular dados desde a data mais antiga até hoje
+            // Sempre usar últimos 60 dias
             const hoje = new Date();
-            const diffTime = Math.abs(hoje - dataInicio);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            const dias = Math.max(diffDays, 60); // Mínimo 60 dias
+            const dias = 60;
 
             const dadosPeriodo = [];
             const labels = [];
@@ -2471,44 +2802,34 @@
             }
         }
 
+        // Toggle entre pré e pós-fixado na calculadora
+        function toggleCalcTipo(invest) {
+            const tipo = document.querySelector(`input[name="${invest}-tipo"]:checked`).value;
+            const posDiv = document.getElementById(`${invest}-pos`);
+            const preDiv = document.getElementById(`${invest}-pre`);
+            
+            if (tipo === 'pos') {
+                posDiv.style.display = 'block';
+                preDiv.style.display = 'none';
+            } else {
+                posDiv.style.display = 'none';
+                preDiv.style.display = 'block';
+            }
+        }
+
         async function carregarTaxasCalculadora() {
             try {
-                // Buscar Selic da API do Banco Central
+                // Buscar Selic da API do Banco Central para calcular CDI
                 const selicResponse = await fetch('https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/1?formato=json');
                 const selicData = await selicResponse.json();
                 
                 if (selicData && selicData.length > 0) {
                     const selic = parseFloat(selicData[0].valor);
                     
-                    // Preencher Selic
-                    document.getElementById('calc-selic').value = formatarValorMonetario(selic);
-                    
                     // CDI geralmente fica ~0.10% abaixo da Selic
                     const cdi = selic - 0.10;
                     document.getElementById('calc-cdi').value = formatarValorMonetario(cdi);
                 }
-
-                // Buscar IPCA projetado (meta dos próximos 12 meses)
-                const ipcaResponse = await fetch('https://api.bcb.gov.br/dados/serie/bcdata.sgs.13522/dados/ultimos/1?formato=json');
-                const ipcaData = await ipcaResponse.json();
-                
-                if (ipcaData && ipcaData.length > 0) {
-                    const ipca = parseFloat(ipcaData[0].valor);
-                    document.getElementById('calc-ipca').value = formatarValorMonetario(ipca);
-                }
-
-                // Calcular poupança baseado na Selic
-                // Regra: se Selic > 8.5% → 0.5% + TR, senão → 70% da Selic
-                const selicAtual = parseFloat(selicData[0].valor);
-                let poupanca;
-                if (selicAtual > 8.5) {
-                    poupanca = 0.50; // 0.5% a.m. (aproximação, TR geralmente próximo de 0)
-                } else {
-                    // 70% da Selic anual, convertido pra mensal
-                    const selicMensal = Math.pow(1 + (selicAtual * 0.70 / 100), 1/12) - 1;
-                    poupanca = selicMensal * 100;
-                }
-                document.getElementById('calc-poupanca').value = formatarValorMonetario(poupanca);
 
             } catch (error) {
                 console.error('Erro ao carregar taxas:', error);
@@ -2522,26 +2843,45 @@
             const aporte = parseValorMonetario(document.getElementById('calc-aporte').value) || 0;
             const meses = parseInt(document.getElementById('calc-periodo').value) || 12;
             
-            const selic = parseValorMonetario(document.getElementById('calc-selic').value) / 100;
-            const cdi = parseValorMonetario(document.getElementById('calc-cdi').value) / 100;
-            const ipca = parseValorMonetario(document.getElementById('calc-ipca').value) / 100;
-            const poupancaMensal = parseValorMonetario(document.getElementById('calc-poupanca').value) / 100;
+            // Sempre usar CDI baseado na Selic (ou 10,65% se não carregou)
+            const cdiBase = taxaSelicAtual > 0 ? taxaSelicAtual - 0.10 : 10.65;
+            const cdi = cdiBase / 100;
             
-            const cdbPercent = parseValorMonetario(document.getElementById('calc-cdb-percent').value) / 100;
-            const lciPercent = parseValorMonetario(document.getElementById('calc-lci-percent').value) / 100;
-            const tesouroPercent = parseValorMonetario(document.getElementById('calc-tesouro-percent').value) / 100;
-
             const totalInvestido = inicial + (aporte * meses);
 
             // Determinar alíquota de IR pela tabela regressiva
             const aliquotaIR = getAliquotaIR(meses);
 
+            // CDB - verificar tipo
+            let cdbTaxa;
+            let cdbLabel = 'CDB';
+            const cdbTipo = document.querySelector('input[name="cdb-tipo"]:checked').value;
+            if (cdbTipo === 'pos') {
+                const cdbPercent = parseValorMonetario(document.getElementById('calc-cdb-percent').value) / 100;
+                cdbTaxa = cdi * cdbPercent;
+                cdbLabel = `CDB ${(cdbPercent * 100).toFixed(0)}% CDI`;
+            } else {
+                cdbTaxa = parseValorMonetario(document.getElementById('calc-cdb-pre').value) / 100;
+                cdbLabel = `CDB ${(cdbTaxa * 100).toFixed(2)}% a.a.`;
+            }
+
+            // LCI/LCA - verificar tipo
+            let lciTaxa;
+            let lciLabel = 'LCI/LCA';
+            const lciTipo = document.querySelector('input[name="lci-tipo"]:checked').value;
+            if (lciTipo === 'pos') {
+                const lciPercent = parseValorMonetario(document.getElementById('calc-lci-percent').value) / 100;
+                lciTaxa = cdi * lciPercent;
+                lciLabel = `LCI/LCA ${(lciPercent * 100).toFixed(0)}% CDI`;
+            } else {
+                lciTaxa = parseValorMonetario(document.getElementById('calc-lci-pre').value) / 100;
+                lciLabel = `LCI/LCA ${(lciTaxa * 100).toFixed(2)}% a.a.`;
+            }
+
             // Cálculos
             const resultados = [
-                calcularRendimento('CDB', inicial, aporte, meses, cdi * cdbPercent, totalInvestido, aliquotaIR),
-                calcularRendimento('LCI/LCA', inicial, aporte, meses, cdi * lciPercent, totalInvestido, 0), // Isento
-                calcularRendimento('Tesouro Selic', inicial, aporte, meses, selic * tesouroPercent, totalInvestido, aliquotaIR, 0.002), // Taxa custódia 0.2% a.a.
-                calcularRendimento('Poupança', inicial, aporte, meses, poupancaMensal, totalInvestido, 0, 0, true)
+                calcularRendimento(cdbLabel, inicial, aporte, meses, cdbTaxa, totalInvestido, aliquotaIR),
+                calcularRendimento(lciLabel, inicial, aporte, meses, lciTaxa, totalInvestido, 0) // Isento
             ];
 
             // Ordenar por valor líquido (maior primeiro)
